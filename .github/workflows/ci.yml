@@ -1,0 +1,138 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+# The jobs of the companion sites' CI:
+#   - data: the recorded workloads and engine-parity fixtures are up to
+#     date. It checks out Disaggregated_Inference_Sim at the commit in
+#     src/lib/tradeoffs/vendor/VENDORED.json, checks the three vendored
+#     files are byte for byte that commit's, and re-runs the simulator's
+#     Python package to regenerate the fixtures (they must not change);
+#   - lint, format and typecheck;
+#   - unit tests (the vendored engine against the Python fixtures, bit for
+#     bit; every one of the sweep's 350 points re-run in the engine; the
+#     explorer's fronts against the sweep's Pareto flags; the matrix
+#     against the simulator's results.md; key animation frames; no number
+#     written by hand in the prose) with coverage thresholds;
+#   - e2e on a production build under --no-experimental-require-module;
+#   - Lighthouse CI (performance, accessibility, best practices >= 90).
+
+jobs:
+  lint-and-typecheck:
+    name: Lint & Typecheck
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      # pnpm version comes from `packageManager` in package.json.
+      - uses: pnpm/action-setup@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: pnpm
+
+      - run: pnpm install --frozen-lockfile
+      - run: pnpm format:check
+      - run: pnpm lint
+      - run: pnpm typecheck
+
+  unit-tests:
+    name: Unit Tests
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: pnpm
+      - run: pnpm install --frozen-lockfile
+      - run: pnpm test:coverage
+
+      - name: Upload coverage
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: coverage
+          path: coverage/
+          retention-days: 7
+
+  data:
+    name: Data and fixtures
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: The simulator at the vendored commit
+        run: |
+          COMMIT=$(python3 -c "import json; print(json.load(open('src/lib/tradeoffs/vendor/VENDORED.json'))['commit'])")
+          git clone --quiet https://github.com/BrendanJamesLynskey/Disaggregated_Inference_Sim.git ../Disaggregated_Inference_Sim
+          git -C ../Disaggregated_Inference_Sim checkout --quiet "$COMMIT"
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      # the simulator's only dependency (its pyproject.toml)
+      - run: pip install "simpy>=4.1"
+      - name: Vendored files and fixtures are up to date
+        run: python scripts/tradeoffs_reference.py ../Disaggregated_Inference_Sim --check
+
+  e2e-tests:
+    name: E2E Tests
+    runs-on: ubuntu-latest
+    needs: [data, lint-and-typecheck, unit-tests]
+    env:
+      CI: "true"
+    steps:
+      - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: pnpm
+      - run: pnpm install --frozen-lockfile
+      - run: pnpm test:e2e:install
+      # playwright.config.ts builds, then serves under
+      # `node --no-experimental-require-module` (see the comment there).
+      - run: pnpm test:e2e
+
+      - name: Upload Playwright report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: playwright-report
+          path: playwright-report/
+          retention-days: 7
+
+  lighthouse:
+    name: Lighthouse
+    runs-on: ubuntu-latest
+    needs: [data, lint-and-typecheck, unit-tests]
+    steps:
+      - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: pnpm
+      - run: pnpm install --frozen-lockfile
+      - run: pnpm build
+      # Starts `pnpm start`, audits six pages three times each, and fails on
+      # any category below 0.9 (lighthouserc.json).
+      - run: pnpm lighthouse
+
+      - name: Upload Lighthouse reports
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: lighthouse-reports
+          path: .lighthouseci/
+          include-hidden-files: true
+          retention-days: 7
