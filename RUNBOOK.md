@@ -38,7 +38,7 @@ non-200 (redirects included) or on a page without the content that proves it
 rendered from the data: the landing page's sweep numbers (looked up by the
 smoke script with the same code), the method page's caveat anchors and
 vendored commit, each lever page's title and widget placeholder, and the
-seven-way site switch with Trade-offs current. Then open `/what-if` in a
+two-group site switch with Trade-offs current. Then open `/what-if` in a
 browser: both configurations must simulate (the status line says "Done")
 and, for a sweep configuration, the page must say its live latencies are
 identical to the recorded sweep's. Open `/explore`, press **Play**, step and

@@ -14,6 +14,8 @@ export const ARCHITECTURES_URL =
 export const KERNELS_URL = "https://gpu-kernels-explained.vercel.app";
 export const NUMERICS_URL = "https://numerics-explained.vercel.app";
 export const SILICON_URL = "https://systolic-arrays-explained.vercel.app";
+/** The first of the agent sites (the "Agents" group of the switch). */
+export const HARNESSES_URL = "https://agent-harnesses-explained.vercel.app";
 
 export const GITHUB_URL =
   "https://github.com/BrendanJamesLynskey/inference-tradeoffs-explained";
@@ -55,3 +57,5 @@ export const inferenceCh = (slug: string): string =>
   `${INFERENCE_URL}/learn/${slug}`;
 export const architecturesCh = (slug: string): string =>
   `${ARCHITECTURES_URL}/learn/${slug}`;
+export const harnessesCh = (slug: string): string =>
+  `${HARNESSES_URL}/learn/${slug}`;
