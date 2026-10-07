@@ -1,17 +1,18 @@
 /**
- * The chapters: one per lever (brief 20 §5). Each lever family the sweep
- * measures has a page now, built from the data (its row of the matrix,
- * animated across the workloads, and its measured effects); the chapter
- * text, mechanism animations and paper citations come later. The chapters
- * with no sweep lever yet (they draw on the simulator's earlier results)
- * are listed but not linked.
+ * The chapters: one per lever (brief 20 §5). Each opens with its mechanism
+ * animated from the simulator's recorded states, then its row of the
+ * matrix (for the eight lever families the sweep varies) or the simulator's
+ * recorded results in the same colours (heterogeneous and optical pools,
+ * the KV hand-off, CED, power and hardware draw on its earlier sections),
+ * then why it behaves as measured and its papers. The content is in
+ * src/content/chapters/.
  */
 import type { Family } from "./metrics";
 
 export type Chapter = {
   slug: string;
   title: string;
-  /** The sweep family this chapter covers, or null (not built yet). */
+  /** The sweep family this chapter covers, or null (no sweep lever: recorded results). */
   family: Family | null;
   /** One line: what the lever does (no numbers: those come from the data). */
   summary: string;
@@ -72,7 +73,7 @@ export const CHAPTERS: readonly Chapter[] = [
     title: "Tensor, pipeline and expert parallelism",
     family: "parallelism",
     summary:
-      "Splitting one model across GPUs: by layer slices, by stages, or by experts, and what each costs in communication.",
+      "Splitting one model across GPUs: slicing every layer's matrices, cutting the layers into pipeline stages, or spreading a mixture of experts, and what each costs in communication, memory and idle time.",
   },
   {
     slug: "09-quantisation",
@@ -115,6 +116,3 @@ export const CHAPTERS: readonly Chapter[] = [
 export function chapterOf(family: Family): Chapter | undefined {
   return CHAPTERS.find((c) => c.family === family);
 }
-
-/** The pages built now (a sweep family each). */
-export const BUILT = CHAPTERS.filter((c) => c.family !== null);

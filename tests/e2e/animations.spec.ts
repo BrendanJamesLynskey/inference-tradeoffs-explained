@@ -12,9 +12,14 @@ async function step(fig: Locator): Promise<number> {
 }
 
 async function pause(fig: Locator): Promise<void> {
-  if ((await fig.getAttribute("data-playing")) === "true")
-    await fig.getByTestId("play").click();
-  await expect(fig).toHaveAttribute("data-playing", "false");
+  // the visibility observer may start the animation just after it scrolls
+  // into view: pause until it stays paused (a user pause is never undone)
+  await expect(async () => {
+    if ((await fig.getAttribute("data-playing")) === "true")
+      await fig.getByTestId("play").click();
+    await fig.page().waitForTimeout(300);
+    expect(await fig.getAttribute("data-playing")).toBe("false");
+  }).toPass({ timeout: 15_000 });
 }
 
 function errors(page: Page): string[] {

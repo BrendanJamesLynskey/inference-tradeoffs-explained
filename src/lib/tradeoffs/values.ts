@@ -12,7 +12,14 @@
  *   point.<workload>.<hw>.<lever>.<metric>    the measured value
  *   workload.<workload>.<field>               ttft_slo, tpot_slo, reference_rate, …
  *   price.<hw>                                illustrative $ per GPU-hour
+ *   md|<section>|<table>|<row>|<column>       a cell of results.md, verbatim (recorded.ts)
+ *   mech|<scenario>|<variant>|<key>           a chapter animation's recorded run: its summary
+ *                                             key (ttft_p99, itl_p99, …), horizon, or
+ *                                             cfg.<path> (its configuration)
  */
+import { readFileSync } from "node:fs";
+import { join } from "node:path";
+
 import { buildCaveats, type CaveatNumbers } from "./caveats";
 import { LEVER_KEYS, SWEEP, VENDORED } from "./data";
 import { engine } from "./engine";
@@ -22,7 +29,40 @@ import {
   type MetricKey,
   type WorkloadKey,
 } from "./metrics";
+import type { MFile } from "./mech";
+import { mdCell } from "./recorded";
 import { fixed, int, signedPct } from "@/lib/format";
+
+const mechFiles = new Map<string, MFile>();
+
+/** A chapter animation's recorded scenario (server-side: read from public/). */
+export function mechFile(scenario: string): MFile {
+  let f = mechFiles.get(scenario);
+  if (!f) {
+    f = JSON.parse(
+      readFileSync(
+        join(process.cwd(), "public/tradeoffs/mechanisms", `${scenario}.json`),
+        "utf-8",
+      ),
+    ) as MFile;
+    mechFiles.set(scenario, f);
+  }
+  return f;
+}
+
+function mechValue(path: string): number {
+  const [, scenario, variant, key] = path.split("|");
+  const v = mechFile(scenario!).variants.find((x) => x.key === variant);
+  let x: unknown;
+  if (key === "horizon") x = v?.horizon;
+  else if (key!.startsWith("cfg.")) {
+    x = v?.cfg;
+    for (const part of key!.slice(4).split("."))
+      x = (x as Record<string, unknown> | undefined)?.[part];
+  } else x = (v?.summary as Record<string, number> | undefined)?.[key!];
+  if (typeof x !== "number") throw new Error(`no value at "${path}"`);
+  return x;
+}
 
 export type Fmt =
   | "int"
@@ -35,6 +75,8 @@ export type Fmt =
   | "raw";
 
 export function lookup(path: string): number | string {
+  if (path.startsWith("md|")) return mdCell(path);
+  if (path.startsWith("mech|")) return mechValue(path);
   const [head, ...rest] = path.split(".");
   const fail = (): never => {
     throw new Error(`no value at "${path}"`);

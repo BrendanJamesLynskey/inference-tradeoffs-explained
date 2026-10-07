@@ -39,6 +39,42 @@ const CLIPS: Clip[] = [
     widget: "timeline",
     fps: 8,
   },
+  // the chapters' mechanisms (states the simulator recorded)
+  {
+    name: "batching",
+    path: "/learn/01-batching-and-chunked-prefill",
+    widget: "mech-batching",
+    fps: 6,
+    radio: "Chunked, 512-token budget",
+  },
+  {
+    name: "kv",
+    path: "/learn/02-paged-kv-and-preemption",
+    widget: "mech-kv",
+    fps: 10,
+    radio: "Paged blocks, preempt by recompute",
+  },
+  {
+    name: "pools",
+    path: "/learn/04-disaggregation",
+    widget: "mech-pools",
+    fps: 10,
+    radio: "Disaggregated 1P1D, 4 + 4 H100",
+  },
+  {
+    name: "speculative",
+    path: "/learn/10-speculative-decoding",
+    widget: "mech-spec",
+    fps: 3,
+  },
+  { name: "ring", path: "/learn/08-tp-pp-ep", widget: "mech-ring", fps: 2 },
+  {
+    name: "power",
+    path: "/learn/11-power-and-energy",
+    widget: "mech-power",
+    fps: 10,
+    radio: "300 W cap per GPU, DVFS",
+  },
 ];
 
 // `pnpm animations outliers gptq` records only the named clips

@@ -39,6 +39,31 @@ const SHOTS: Shot[] = [
     step: 30,
   },
   { name: "07-method", path: "/method" },
+  {
+    name: "08-chapter-batching",
+    path: "/learn/01-batching-and-chunked-prefill",
+    widget: "mech-batching",
+    step: 4,
+  },
+  {
+    name: "09-chapter-kv",
+    path: "/learn/02-paged-kv-and-preemption",
+    widget: "mech-kv",
+    step: 30,
+  },
+  {
+    name: "10-chapter-pools",
+    path: "/learn/04-disaggregation",
+    widget: "mech-pools",
+    step: 20,
+  },
+  {
+    name: "11-chapter-speculative",
+    path: "/learn/10-speculative-decoding",
+    widget: "mech-spec",
+    step: 5,
+  },
+  { name: "12-case-study", path: "/workloads/coding-agent" },
 ];
 
 async function main(): Promise<void> {

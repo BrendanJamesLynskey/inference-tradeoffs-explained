@@ -9,7 +9,10 @@
         "http://localhost:3000/matrix",
         "http://localhost:3000/what-if",
         "http://localhost:3000/method",
-        "http://localhost:3000/learn/01-batching-and-chunked-prefill"
+        "http://localhost:3000/learn/01-batching-and-chunked-prefill",
+        "http://localhost:3000/learn/02-paged-kv-and-preemption",
+        "http://localhost:3000/learn/08-tp-pp-ep",
+        "http://localhost:3000/workloads/chat"
       ],
       "numberOfRuns": 3
     },

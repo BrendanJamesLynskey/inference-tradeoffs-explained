@@ -62,13 +62,56 @@ export type EngineSummary = {
   };
 };
 
+/** One forward pass, as the engine's cost model prices it. */
+export type StepCost = {
+  time: number;
+  flops: number;
+  bytes: number;
+  bound: string;
+  ec: number;
+  em: number;
+  /** Scale-up communication seconds (parallel instances only). */
+  commT?: number;
+};
+
+/** The engine's cost model for one instance (CostModel in hardware.py). */
+export type CostModel = {
+  kvCap: number | null;
+  fits: boolean;
+  idleW: number;
+  prefill: (lens: number[]) => StepCost;
+  decodeSum: (ctx: number, batch: number) => StepCost;
+};
+
 type Engine = {
-  DEVICES: Record<string, { name: string; tdp: number; idle: number }>;
+  DEVICES: Record<
+    string,
+    { name: string; tdp: number; idle: number; native: Record<string, number> }
+  >;
   LINKS: Record<string, { name: string; bw: number; lat: number }>;
+  MODELS: Record<string, Record<string, unknown>>;
+  QUANT_FORMATS: Record<string, number>;
+  derive: (m: Record<string, unknown>) => Record<string, unknown>;
+  deviceFor: (key: string, cfg: EngineConfig) => Record<string, unknown>;
+  costModel: (
+    model: Record<string, unknown>,
+    dev: Record<string, unknown>,
+    n: number,
+    overhead: number,
+    powerCap: number | null,
+    dvfs: boolean,
+    sMin: number | undefined,
+    prefillOnly: boolean,
+    opts?: Record<string, unknown>,
+  ) => CostModel;
   simulate: (
     cfg: EngineConfig,
     rows: Row[],
-  ) => { reqs: EngineRequest[]; horizon: number };
+  ) => {
+    reqs: (EngineRequest & { itls: number[] })[];
+    horizon: number;
+    insts: { peakW: number; ec: number; em: number; busy: number }[];
+  };
   summarise: (res: unknown) => EngineSummary;
   expectedTokens: (alpha: number, gamma: number) => number;
 };

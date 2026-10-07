@@ -331,7 +331,7 @@ export default function WhatIf({
           )}{" "}
           <button
             type="button"
-            className="focus-ring ml-1 rounded underline underline-offset-2"
+            className="focus-ring ml-1 inline-flex min-h-11 items-center rounded underline underline-offset-2"
             onClick={() => setAfter(before)}
           >
             Copy &ldquo;before&rdquo;
