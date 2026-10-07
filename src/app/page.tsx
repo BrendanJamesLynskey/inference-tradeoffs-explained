@@ -119,10 +119,15 @@ export default function HomePage(): JSX.Element {
         ))}
       </nav>
       <p className="mt-6 text-sm text-neutral-600 dark:text-neutral-400">
-        One page per lever, with its row of the matrix animated across the
-        workloads:{" "}
+        One chapter per lever, each opening with its mechanism animated from the
+        simulator&apos;s own records, then its row of the matrix and why it
+        behaves as measured:{" "}
         <Link href="/learn" className={A}>
           the levers
+        </Link>
+        . One workload at a time, with the configuration that serves it best:{" "}
+        <Link href="/workloads" className={A}>
+          the case studies
         </Link>
         .
       </p>

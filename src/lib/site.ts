@@ -43,3 +43,15 @@ export function deck(repo: string, slide?: number): string {
 export function repoFile(path: string): string {
   return `${GITHUB_URL}/blob/main/${path}`;
 }
+
+/** A chapter of one of the companion sites. */
+export const kernelsCh = (slug: string): string =>
+  `${KERNELS_URL}/learn/${slug}`;
+export const numericsCh = (slug: string): string =>
+  `${NUMERICS_URL}/learn/${slug}`;
+export const siliconCh = (slug: string): string =>
+  `${SILICON_URL}/learn/${slug}`;
+export const inferenceCh = (slug: string): string =>
+  `${INFERENCE_URL}/learn/${slug}`;
+export const architecturesCh = (slug: string): string =>
+  `${ARCHITECTURES_URL}/learn/${slug}`;

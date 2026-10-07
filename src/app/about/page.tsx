@@ -122,6 +122,22 @@ export default function AboutPage(): JSX.Element {
             simulator&apos;s results.md.
           </li>
           <li>
+            <strong>The chapters&apos; mechanisms.</strong>{" "}
+            <a href={repoFile("scripts/mechanisms_reference.py")} className={A}>
+              scripts/mechanisms_reference.py
+            </a>{" "}
+            runs small named scenarios through the simulator&apos;s Python
+            package at the vendored commit and records every forward pass of
+            every instance (each running row&apos;s state, the KV in use, the
+            prefix cache, preemptions, hand-offs); the chapter animations draw
+            those records, and the unit tests run the vendored engine on the
+            same scenarios and require the same request timestamps, bit for bit.
+            The parallelism and quantisation animations call the engine&apos;s
+            cost model live, checked against the Python cost model number for
+            number. Results the sweep does not vary are quoted cell by cell from
+            the vendored results.md.
+          </li>
+          <li>
             <strong>Animations.</strong> Each is a sequence of states computed
             from the data; a frame is a pure function of (state, t), and key
             frames are unit-tested. Every animation has play and pause, step, a

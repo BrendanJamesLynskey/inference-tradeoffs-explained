@@ -41,6 +41,17 @@ def generated_links() -> set[str]:
         out |= {f"https://doi.org/{d}" for d in re.findall(r"doi:(10\.\d{4,}/[^\s),;]+)", w["rationale"])}
     for path in [f["path"] for f in rec["files"]] + ["examples/tradeoffs.py"]:
         out.add(f"{rec['repository']}/blob/{rec['commit']}/{path}")
+    # the chapters' links into the companion sites and decks, built by src/lib/site.ts helpers
+    sites = {"kernels": "https://gpu-kernels-explained.vercel.app", "numerics": "https://numerics-explained.vercel.app",
+             "silicon": "https://systolic-arrays-explained.vercel.app",
+             "inference": "https://llm-inference-explained.vercel.app",
+             "architectures": "https://llm-architectures-explained.vercel.app"}
+    for f in (ROOT / "src/content").rglob("*.tsx"):
+        text = f.read_text()
+        for site, slug in re.findall(r'(kernels|numerics|silicon|inference|architectures)Ch\(\s*"([^"]+)"', text):
+            out.add(f"{sites[site]}/learn/{slug}")
+        for repo in re.findall(r'deck\(\s*"([^"]+)"', text):
+            out.add(f"https://brendanjameslynskey.github.io/{repo}/")
     return out
 URL = re.compile(r"https?://[^\s\"'`)<>\]}]+")
 

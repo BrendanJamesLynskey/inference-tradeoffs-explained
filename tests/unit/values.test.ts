@@ -29,6 +29,7 @@ export function files(dir: string, ext = ".tsx"): string[] {
 const SOURCES = [
   ...files(join(process.cwd(), "src/app")),
   ...files(join(process.cwd(), "src/components")),
+  ...files(join(process.cwd(), "src/content")),
 ];
 
 describe("values", () => {

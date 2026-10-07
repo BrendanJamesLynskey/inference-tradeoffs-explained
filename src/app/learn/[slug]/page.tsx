@@ -1,34 +1,31 @@
 /**
- * /learn/[slug]: one lever family's page, built from the vendored sweep: its
- * rows of the matrix (animated across the workloads, the hero), then what
- * each lever measured on every workload, its caveats, and links into the
- * explorer and the live simulator. Server Component, statically generated
- * for every chapter with sweep data.
+ * /learn/[slug]: one chapter per lever (brief 20 §5). Each opens with its
+ * mechanism, animated from states the simulator recorded; then its row of
+ * the matrix (the sweep's measured effects, animated across the
+ * workloads), or for the levers the sweep does not vary the simulator's
+ * recorded results in the same colours; then why it behaves as measured,
+ * with links to the family's Kernels, Numerics and Silicon visuals; the
+ * sweep's numbers lever by lever; and the papers. Server Component,
+ * statically generated for all thirteen chapters.
  */
 import Link from "next/link";
 import { notFound } from "next/navigation";
 
 import { LeverMatrix } from "@/components/interactive/lazy";
 import { DeltaEq } from "@/components/mdx/equations";
-import { MdxTable } from "@/components/ui/MdxTable";
-import { signedPct } from "@/lib/format";
-import { BUILT, CHAPTERS } from "@/lib/tradeoffs/chapters";
-import { SWEEP, slimLevers } from "@/lib/tradeoffs/data";
-import { NEUTRAL, cell, pctOf } from "@/lib/tradeoffs/effects";
-import {
-  FAMILY_LABEL,
-  WORKLOADS,
-  WORKLOAD_LABEL,
-  type MetricKey,
-} from "@/lib/tradeoffs/metrics";
-import { caveatsFor, CAVEAT_ORDER } from "@/lib/tradeoffs/caveats";
+import { CONTENT } from "@/content/chapters";
+import { LeverTables } from "@/content/LeverTables";
+import { References } from "@/content/ui";
+import { CHAPTERS } from "@/lib/tradeoffs/chapters";
+import { FAMILY_LABEL } from "@/lib/tradeoffs/metrics";
 import { matrixProps } from "@/lib/tradeoffs/props";
-import { caveats as allCaveats } from "@/lib/tradeoffs/values";
 
 export const dynamicParams = false;
 
 export async function generateStaticParams(): Promise<{ slug: string }[]> {
-  return BUILT.map((c) => ({ slug: c.slug }));
+  return CHAPTERS.filter((c) => CONTENT[c.slug]).map((c) => ({
+    slug: c.slug,
+  }));
 }
 
 export async function generateMetadata({
@@ -36,161 +33,78 @@ export async function generateMetadata({
 }: {
   params: { slug: string };
 }) {
-  const c = BUILT.find((x) => x.slug === params.slug);
+  const c = CHAPTERS.find((x) => x.slug === params.slug);
   return c ? { title: c.title, description: c.summary } : {};
 }
 
-const COLS: MetricKey[] = [
-  "goodput_req_s_per_gpu",
-  "usd_per_mtok",
-  "ttft_p99",
-  "tpot_p99",
-  "itl_p99",
-];
-const COL_LABEL: Record<string, string> = {
-  goodput_req_s_per_gpu: "goodput",
-  usd_per_mtok: "$/M tok",
-  ttft_p99: "TTFT p99",
-  tpot_p99: "TPOT p99",
-  itl_p99: "ITL p99",
-};
-const A =
-  "focus-ring rounded text-accent underline underline-offset-2 dark:text-indigo-300";
+const NAV =
+  "focus-ring rounded text-sm text-accent underline underline-offset-2 dark:text-indigo-300";
 
-export default function LeverPage({
+export default function ChapterPage({
   params,
 }: {
   params: { slug: string };
 }): JSX.Element {
-  const ch = BUILT.find((c) => c.slug === params.slug);
-  if (!ch || !ch.family) notFound();
+  const i = CHAPTERS.findIndex((c) => c.slug === params.slug);
+  const ch = CHAPTERS[i];
+  const content = ch ? CONTENT[ch.slug] : undefined;
+  if (!ch || !content) notFound();
   const fam = ch.family;
-  const mx = matrixProps(fam);
-  const levers = slimLevers().filter((l) => l.fam === fam);
-  const cav = allCaveats();
-  const used = new Set<string>();
-  const n = CHAPTERS.indexOf(ch) + 1;
+  const prev = CHAPTERS[i - 1];
+  const next = CHAPTERS[i + 1];
+  const { Hero, Row, Body, refs } = content;
   return (
     <main className="mx-auto max-w-5xl px-4 py-12 sm:px-6">
       <p className="font-mono text-xs uppercase tracking-widest text-accent dark:text-indigo-300">
-        Chapter {String(n).padStart(2, "0")} · {FAMILY_LABEL[fam]}
+        Chapter {String(i + 1).padStart(2, "0")}
+        {fam ? ` · ${FAMILY_LABEL[fam]}` : ""}
       </p>
       <h1 className="mt-2 text-3xl font-semibold tracking-tight">{ch.title}</h1>
-      <LeverMatrix
-        {...mx}
-        title={`${FAMILY_LABEL[fam]}: the measured effects`}
-        testId="lever-matrix"
-        equation={<DeltaEq />}
-      />
-      <p className="max-w-3xl text-neutral-700 dark:text-neutral-300">
-        {ch.summary}
+      <p className="mt-3 max-w-3xl text-lg leading-relaxed text-neutral-700 dark:text-neutral-300">
+        {ch.summary} Below, the mechanism as the simulator ran it, step by step;
+        then what it measured, why it behaves that way, and the papers.
       </p>
-      <p className="mt-3 max-w-3xl text-sm text-neutral-600 dark:text-neutral-400">
-        The chapter text (the mechanism animated, why it behaves as measured,
-        and the papers) is being written. This page already shows what the sweep
-        measured.
-      </p>
-      {levers.map((l) => (
-        <section key={l.key} id={l.key} className="mt-10 scroll-mt-6">
-          <h2 className="text-xl font-semibold tracking-tight">{l.label}</h2>
-          <p className="mt-1 text-sm text-neutral-600 dark:text-neutral-400">
-            Change from the baseline on H100
-            {l.only ? " (B200 here: it needs FP4 units)" : ""}, at capacity for
-            goodput and cost, at the reference load for latency.{" "}
-            <Link
-              href={`/what-if?w=chat&hw=${l.only ? l.only[0] : "h100"}&lever=${l.key}`}
-              className={A}
-            >
-              Run it live
-            </Link>
-          </p>
-          <MdxTable>
-            <thead>
-              <tr>
-                <th className="p-2 text-left">Workload</th>
-                {COLS.map((m) => (
-                  <th key={m} className="p-2 text-right">
-                    {COL_LABEL[m]}
-                  </th>
-                ))}
-              </tr>
-            </thead>
-            <tbody>
-              {WORKLOADS.map((w) => {
-                const hw = l.only ? l.only[0]! : "h100";
-                const e = SWEEP.effects[w][hw]?.[l.key] ?? {};
-                return (
-                  <tr
-                    key={w}
-                    className="border-t border-neutral-200 dark:border-neutral-800"
-                  >
-                    <td className="p-2">{WORKLOAD_LABEL[w]}</td>
-                    {COLS.map((m) => {
-                      const c = cell(e[m], m);
-                      const marks = caveatsFor({
-                        lever: l.key,
-                        family: l.fam,
-                        metric: m,
-                        workload: w,
-                        hw,
-                        rel: c.rel,
-                        goodputRel: e.goodput_req_s_per_gpu ?? null,
-                      });
-                      marks.forEach((k) => used.add(k));
-                      return (
-                        <td
-                          key={m}
-                          className="whitespace-nowrap p-2 text-right font-mono"
-                          data-verdict={c.verdict}
-                        >
-                          {c.rel === null ? "–" : signedPct(c.rel)}{" "}
-                          <span aria-hidden>
-                            {c.verdict === "better"
-                              ? "✓"
-                              : c.verdict === "worse"
-                                ? "✗"
-                                : ""}
-                          </span>
-                          {marks.length > 0 && (
-                            <sup>{marks.map((k) => cav[k].mark).join("")}</sup>
-                          )}
-                        </td>
-                      );
-                    })}
-                  </tr>
-                );
-              })}
-            </tbody>
-          </MdxTable>
-        </section>
-      ))}
-      <section className="mt-10" aria-label="Caveats">
+      <Hero />
+      <section id="matrix-row" className="mt-12 scroll-mt-6">
         <h2 className="text-xl font-semibold tracking-tight">
-          Caveats on these numbers
+          {fam ? "Its row of the matrix" : "What the simulator recorded"}
         </h2>
-        <ul className="mt-3 space-y-2 text-sm text-neutral-700 dark:text-neutral-300">
-          {CAVEAT_ORDER.filter((k) => used.has(k)).map((k) => (
-            <li key={k}>
-              <span className="mr-1 font-mono font-semibold">
-                {cav[k].mark}
-              </span>
-              <strong>{cav[k].short}.</strong> {cav[k].long}
-            </li>
-          ))}
-        </ul>
-        <p className="mt-4 text-sm text-neutral-600 dark:text-neutral-400">
-          ✓ better than the baseline, ✗ worse, by more than ±{pctOf(NEUTRAL)}.
-          Every lever on every metric and device:{" "}
-          <Link href="/matrix" className={A}>
-            the matrix
-          </Link>
-          ; on any two metrics:{" "}
-          <Link href="/explore" className={A}>
-            the explorer
-          </Link>
-          .
-        </p>
+        {fam ? (
+          <LeverMatrix
+            {...matrixProps(fam)}
+            title={`${FAMILY_LABEL[fam]}: the measured effects`}
+            testId="lever-matrix"
+            equation={<DeltaEq />}
+          />
+        ) : (
+          Row && <Row />
+        )}
       </section>
+      <Body />
+      {fam && <LeverTables fam={fam} />}
+      <References keys={refs} />
+      <nav
+        aria-label="Chapters"
+        className="mt-12 flex flex-wrap justify-between gap-4 border-t border-neutral-200 pt-6 dark:border-neutral-800"
+      >
+        {prev && CONTENT[prev.slug] ? (
+          <Link href={`/learn/${prev.slug}`} className={NAV}>
+            ← {prev.title}
+          </Link>
+        ) : (
+          <span />
+        )}
+        <Link href="/learn" className={NAV}>
+          All chapters
+        </Link>
+        {next && CONTENT[next.slug] ? (
+          <Link href={`/learn/${next.slug}`} className={NAV}>
+            {next.title} →
+          </Link>
+        ) : (
+          <span />
+        )}
+      </nav>
     </main>
   );
 }

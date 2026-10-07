@@ -16,7 +16,8 @@
  * page must carry the seven-way site switch with Trade-offs current, and
  * each recorded workload must be served with the vendored commit.
  */
-import { BUILT } from "@/lib/tradeoffs/chapters";
+import { CHAPTERS } from "@/lib/tradeoffs/chapters";
+import { SCENARIOS } from "@/lib/tradeoffs/mech";
 import { VENDORED } from "@/lib/tradeoffs/data";
 import { WORKLOADS } from "@/lib/tradeoffs/metrics";
 import { formatValue, lookup } from "@/lib/tradeoffs/values";
@@ -86,13 +87,31 @@ async function main(): Promise<void> {
     checkPage(
       base,
       "/learn",
-      BUILT.map((c) => c.slug),
+      CHAPTERS.map((c) => c.slug),
     ),
-    ...BUILT.map((c) =>
+    ...CHAPTERS.map((c) =>
       checkPage(base, `/learn/${c.slug}`, [
         c.title,
         "data-pending-widget",
+        'id="references"',
         ...SWITCH,
+      ]),
+    ),
+    checkPage(
+      base,
+      "/workloads",
+      WORKLOADS.map((w) => `/workloads/${w}`),
+    ),
+    ...WORKLOADS.map((w) =>
+      checkPage(base, `/workloads/${w}`, [
+        'data-testid="recommended"',
+        'data-testid="case-flips"',
+        ...SWITCH,
+      ]),
+    ),
+    ...[...SCENARIOS, "cost_model"].map((s) =>
+      checkPage(base, `/tradeoffs/mechanisms/${s}.json`, [
+        `"commit":"${VENDORED.commit}"`,
       ]),
     ),
     ...WORKLOADS.map((w) =>

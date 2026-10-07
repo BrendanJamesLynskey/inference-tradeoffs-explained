@@ -5,7 +5,7 @@
 import { describe, expect, it } from "vitest";
 
 import { int, minus, pct, sci, signed, sub, sup, trim } from "@/lib/format";
-import { BUILT, CHAPTERS, chapterOf } from "@/lib/tradeoffs/chapters";
+import { CHAPTERS, chapterOf } from "@/lib/tradeoffs/chapters";
 import {
   LEVER_KEYS,
   SWEEP,
@@ -71,9 +71,9 @@ describe("views and props", () => {
       expect(h[k]).toBe(ch ? `/learn/${ch.slug}#${k}` : "/learn");
     }
     expect(h.baseline).toBe("/learn");
-    expect(new Set(BUILT.map((c) => c.family))).toEqual(
-      new Set(FAMILIES.filter((f) => f !== "baseline")),
-    );
+    expect(
+      new Set(CHAPTERS.filter((c) => c.family).map((c) => c.family)),
+    ).toEqual(new Set(FAMILIES.filter((f) => f !== "baseline")));
     expect(CHAPTERS.map((c) => c.slug)).toEqual(
       [...CHAPTERS.map((c) => c.slug)].sort(),
     );

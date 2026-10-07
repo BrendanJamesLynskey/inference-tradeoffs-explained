@@ -1,6 +1,5 @@
 /**
- * /learn: the levers, one chapter each. The levers the sweep measures have
- * a page now (built from the data); the others are listed, not linked.
+ * /learn: the levers, one chapter each, and the workload case studies.
  * Server Component, statically rendered.
  */
 import Link from "next/link";
@@ -22,17 +21,27 @@ export default function LearnIndex(): JSX.Element {
       </p>
       <h1 className="mt-2 text-3xl font-semibold tracking-tight">The levers</h1>
       <p className="mt-4 text-neutral-600 dark:text-neutral-300">
-        One chapter per lever. Each opens with its row of the matrix, animated
-        across the workloads, and lists what the sweep measured. How each
-        mechanism works is explained step by step on{" "}
+        One chapter per lever. Each opens with its mechanism, animated from
+        states the simulator recorded, then its row of the matrix (or, for the
+        levers the sweep does not vary, the simulator&apos;s recorded results in
+        the same colours), then why it behaves as measured, with links to the
+        family&apos;s Kernels, Numerics and Silicon visuals, and its papers. How
+        each mechanism works is explained step by step on{" "}
         <a
           href={INFERENCE_URL}
           className="focus-ring rounded text-accent underline underline-offset-2 dark:text-indigo-300"
         >
           LLM Inference Explained
         </a>
-        ; the chapters here are about the trade-off. The chapters not linked yet
-        draw on the simulator&apos;s earlier results and are being written.
+        ; the chapters here are about the trade-off. For one workload at a time,
+        see the{" "}
+        <Link
+          href="/workloads"
+          className="focus-ring rounded text-accent underline underline-offset-2 dark:text-indigo-300"
+        >
+          case studies
+        </Link>
+        .
       </p>
       <ol className="mt-10 divide-y divide-neutral-200 dark:divide-neutral-800">
         {CHAPTERS.map((c, i) => (
@@ -41,19 +50,12 @@ export default function LearnIndex(): JSX.Element {
               <span className="font-mono text-xs text-neutral-500 dark:text-neutral-400">
                 {String(i + 1).padStart(2, "0")}
               </span>
-              {c.family ? (
-                <Link
-                  href={`/learn/${c.slug}`}
-                  className="focus-ring rounded text-lg font-medium text-neutral-900 hover:text-accent dark:text-neutral-100"
-                >
-                  {c.title}
-                </Link>
-              ) : (
-                <span className="text-lg font-medium text-neutral-500 dark:text-neutral-400">
-                  {c.title}{" "}
-                  <span className="text-xs font-normal">(being written)</span>
-                </span>
-              )}
+              <Link
+                href={`/learn/${c.slug}`}
+                className="focus-ring rounded text-lg font-medium text-neutral-900 hover:text-accent dark:text-neutral-100"
+              >
+                {c.title}
+              </Link>
             </div>
             <p className="mt-1 pl-9 text-sm text-neutral-600 dark:text-neutral-400">
               {c.summary}

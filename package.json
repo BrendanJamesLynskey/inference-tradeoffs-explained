@@ -30,6 +30,8 @@
     "vendor": "tsx scripts/vendor-tradeoffs.ts",
     "fixtures": "python3 scripts/tradeoffs_reference.py",
     "fixtures:check": "python3 scripts/tradeoffs_reference.py --check",
+    "mechanisms": "python3 scripts/mechanisms_reference.py",
+    "mechanisms:check": "python3 scripts/mechanisms_reference.py --check",
     "animations": "tsx scripts/capture-animations.ts"
   },
   "dependencies": {

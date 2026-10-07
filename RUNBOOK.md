@@ -71,8 +71,14 @@ Disaggregated_Inference_Sim at one commit. To move to a newer one:
 ```bash
 pnpm vendor <commit>                                                    # copies the three files, records SHA-256s
 ../Disaggregated_Inference_Sim/.venv/bin/python scripts/tradeoffs_reference.py   # workloads + parity fixtures
-pnpm test                                                               # parity, all 350 points, fronts, results.md
+../Disaggregated_Inference_Sim/.venv/bin/python scripts/mechanisms_reference.py  # the chapters' recorded scenarios
+pnpm test                                                               # parity, all 350 points, fronts, results.md, chapters
 ```
+
+The chapters quote results.md cells by section, table, row and column
+(`md|…` paths) and the recorded scenarios by key (`mech|…`): a path that no
+longer resolves fails the build, so a newer results.md whose tables moved
+shows up at once.
 
 The simulator checkout must be at that commit (the script refuses
 otherwise). Never edit the vendored files or the fixtures by hand: CI
