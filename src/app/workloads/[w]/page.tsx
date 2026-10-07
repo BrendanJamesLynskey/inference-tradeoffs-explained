@@ -29,6 +29,7 @@ import {
   type WorkloadKey,
 } from "@/lib/tradeoffs/metrics";
 import { explorerProps } from "@/lib/tradeoffs/props";
+import { harnessesCh } from "@/lib/site";
 
 export const dynamicParams = false;
 
@@ -114,6 +115,17 @@ export default function WorkloadPage({
         <blockquote className="border-l-4 border-neutral-300 pl-4 text-sm dark:border-neutral-700">
           {info.rationale}
         </blockquote>
+        {w === "coding-agent" && (
+          <p>
+            This page is the serving side of a coding agent. The other side, how
+            many model calls one task makes, how much of each prompt the cache
+            serves and how long the human waits, belongs to the harness:{" "}
+            <a href={harnessesCh("10-cost-and-latency")} className={A_CLASS}>
+              Agent Harnesses Explained, chapter 10
+            </a>{" "}
+            prices a whole task turn by turn.
+          </p>
+        )}
       </div>
 
       <section id="recommended" className="mt-10">

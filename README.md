@@ -22,8 +22,12 @@ shows how a GPU runs the maths, [Numerics Explained](https://numerics-explained.
 is about the number formats (and accuracy, which this site does not
 simulate), [Systolic Arrays Explained](https://systolic-arrays-explained.vercel.app/)
 is the silicon underneath, and this site is about the decisions. They share
-one design system and link to each other from the header ("Decoder ·
-Inference · Architectures · Kernels · Numerics · Silicon · Trade-offs").
+one design system and link to each other from the header, in two groups:
+"LLM systems" (Decoder · Inference · Architectures · Kernels · Numerics ·
+Silicon · Trade-offs) and "Agents", which starts with
+[Agent Harnesses Explained](https://agent-harnesses-explained.vercel.app/)
+(the loop, tools, context and permissions that turn a model into an agent;
+five more agent sites are marked "soon").
 
 **Live:** [inference-tradeoffs-explained.vercel.app](https://inference-tradeoffs-explained.vercel.app/)
 

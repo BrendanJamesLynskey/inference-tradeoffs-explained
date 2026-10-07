@@ -2,7 +2,7 @@
 import { PrefixWidget } from "@/components/interactive/lazy";
 import { PrefixEq } from "@/components/mdx/equations";
 import { V } from "@/components/mdx/V";
-import { inferenceCh, kernelsCh } from "@/lib/site";
+import { harnessesCh, inferenceCh, kernelsCh } from "@/lib/site";
 
 import { A, Cite, Deeper, RecordedTable, Sec } from "../ui";
 import type { ChapterContent } from "./types";
@@ -111,6 +111,12 @@ function Body(): JSX.Element {
           GPU Kernels Explained:{" "}
           <A href={kernelsCh("02-roofline")}>the roofline</A>, why prefill time
           is FLOPs and a cached token is work saved.
+        </li>
+        <li>
+          Agent Harnesses Explained:{" "}
+          <A href={harnessesCh("04-prompt-caching")}>prompt caching</A> from the
+          agent&apos;s side: the stable prefix a harness keeps, turn by turn,
+          and what breaks it.
         </li>
       </Deeper>
     </>

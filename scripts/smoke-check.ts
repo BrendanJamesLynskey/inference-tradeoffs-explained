@@ -13,7 +13,7 @@
  * Fails when a page is not a 200 (redirects count as failures) or lacks
  * the content that proves it rendered from the data: the landing page must
  * print the sweep's own numbers (looked up here with the same code), every
- * page must carry the seven-way site switch with Trade-offs current, and
+ * page must carry the two-group site switch with Trade-offs current, and
  * each recorded workload must be served with the vendored commit.
  */
 import { CHAPTERS } from "@/lib/tradeoffs/chapters";
@@ -29,7 +29,8 @@ const headers: Record<string, string> = process.env.VERCEL_BYPASS
   : {};
 
 const SWITCH = [
-  'aria-label="Companion sites"',
+  'data-site-switch="full"',
+  'href="https://agent-harnesses-explained.vercel.app"',
   'href="https://systolic-arrays-explained.vercel.app"',
   'href="https://inference-tradeoffs-explained.vercel.app"',
   'data-site-switch="compact"',
