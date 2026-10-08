@@ -32,6 +32,7 @@ const SWITCH = [
   'data-site-switch="full"',
   'href="https://agent-harnesses-explained.vercel.app"',
   'href="https://agent-protocols-explained.vercel.app"',
+  'href="https://agent-context-explained.vercel.app"',
   'href="https://systolic-arrays-explained.vercel.app"',
   'href="https://inference-tradeoffs-explained.vercel.app"',
   'data-site-switch="compact"',
