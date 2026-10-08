@@ -27,7 +27,8 @@ one design system and link to each other from the header, in two groups:
 Silicon · Trade-offs) and "Agents", which starts with
 [Agent Harnesses Explained](https://agent-harnesses-explained.vercel.app/)
 (the loop, tools, context and permissions that turn a model into an agent;
-five more agent sites are marked "soon").
+then [Agent Protocols Explained](https://agent-protocols-explained.vercel.app/),
+MCP and A2A on the wire; four more agent sites are marked "soon").
 
 **Live:** [inference-tradeoffs-explained.vercel.app](https://inference-tradeoffs-explained.vercel.app/)
 
