@@ -123,8 +123,8 @@ function Body(): JSX.Element {
         <li>
           The hardware underneath, AI Racks Explained:{" "}
           <A href={racksCh("06-power")}>power</A> and{" "}
-          <A href={racksCh("07-cooling")}>cooling</A>, what feeds a 120 kW rack
-          and carries its heat away.
+          <A href={racksCh("07-cooling")}>cooling</A>, what feeds a rack and
+          carries its heat away.
         </li>
       </Deeper>
     </>

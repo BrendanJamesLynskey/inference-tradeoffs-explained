@@ -143,7 +143,7 @@ function Body(): JSX.Element {
           <A href={racksCh("08-disaggregated-inference")}>
             disaggregated inference on a rack
           </A>
-          , the pool split inside one 72-GPU rack.
+          , the pool split inside one rack.
         </li>
       </Deeper>
     </>
