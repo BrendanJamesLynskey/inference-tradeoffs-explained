@@ -2,7 +2,7 @@
 import { PoolWidget } from "@/components/interactive/lazy";
 import { HandoffEq } from "@/components/mdx/equations";
 import { V } from "@/components/mdx/V";
-import { inferenceCh, numericsCh } from "@/lib/site";
+import { inferenceCh, numericsCh, racksCh } from "@/lib/site";
 
 import { A, Cite, Deeper, RecordedTable, Sec } from "../ui";
 import type { ChapterContent } from "./types";
@@ -143,6 +143,14 @@ function Body(): JSX.Element {
           Numerics Explained:{" "}
           <A href={numericsCh("09-kv-cache")}>quantising the KV cache</A>, the
           accuracy side of compressing it.
+        </li>
+        <li>
+          The hardware underneath, AI Racks Explained:{" "}
+          <A href={racksCh("08-disaggregated-inference")}>
+            disaggregated inference on a rack
+          </A>
+          , the hand-off over NVLink inside a rack against network ports between
+          racks.
         </li>
       </Deeper>
     </>

@@ -2,7 +2,7 @@
 import { PowerWidget } from "@/components/interactive/lazy";
 import { PowerEq } from "@/components/mdx/equations";
 import { V } from "@/components/mdx/V";
-import { inferenceCh, kernelsCh, numericsCh } from "@/lib/site";
+import { inferenceCh, kernelsCh, numericsCh, racksCh } from "@/lib/site";
 
 import { A, Cite, Deeper, RecordedTable, Sec } from "../ui";
 import type { ChapterContent } from "./types";
@@ -119,6 +119,12 @@ function Body(): JSX.Element {
           LLM Inference Explained:{" "}
           <A href={inferenceCh("13-live-simulator")}>the live simulator</A>,
           with its power and energy readout.
+        </li>
+        <li>
+          The hardware underneath, AI Racks Explained:{" "}
+          <A href={racksCh("06-power")}>power</A> and{" "}
+          <A href={racksCh("07-cooling")}>cooling</A>, what feeds a 120 kW rack
+          and carries its heat away.
         </li>
       </Deeper>
     </>

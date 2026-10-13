@@ -7,7 +7,7 @@ import { deviceBars } from "@/lib/tradeoffs/cases";
 import { SWEEP } from "@/lib/tradeoffs/data";
 import { cell } from "@/lib/tradeoffs/effects";
 import { HW_LABEL, WORKLOADS, WORKLOAD_LABEL } from "@/lib/tradeoffs/metrics";
-import { kernelsCh, siliconCh } from "@/lib/site";
+import { kernelsCh, racksCh, siliconCh } from "@/lib/site";
 import { signedPct } from "@/lib/format";
 
 import { A, Cite, Deeper, Sec } from "../ui";
@@ -167,6 +167,12 @@ function Body(): JSX.Element {
           Systolic Arrays Explained:{" "}
           <A href={siliconCh("07-the-tpu")}>the TPU</A>, a different matrix
           engine.
+        </li>
+        <li>
+          The hardware underneath, AI Racks Explained:{" "}
+          <A href={racksCh("11-cost")}>cost per token</A>, capital and
+          electricity per rack, and{" "}
+          <A href={racksCh("10-other-designs")}>other designs</A>.
         </li>
       </Deeper>
     </>

@@ -2,7 +2,7 @@
 import { PoolWidget } from "@/components/interactive/lazy";
 import { TimelineEq } from "@/components/mdx/equations";
 import { V } from "@/components/mdx/V";
-import { kernelsCh, siliconCh } from "@/lib/site";
+import { kernelsCh, racksCh, siliconCh } from "@/lib/site";
 
 import { A, Cite, Deeper, RecordedTable, Sec } from "../ui";
 import type { ChapterContent } from "./types";
@@ -158,6 +158,13 @@ function Body(): JSX.Element {
           Systolic Arrays Explained:{" "}
           <A href={siliconCh("08-other-ways")}>other ways</A>, other matrix
           hardware.
+        </li>
+        <li>
+          The hardware underneath, AI Racks Explained:{" "}
+          <A href={racksCh("08-disaggregated-inference")}>
+            disaggregated inference on a rack
+          </A>
+          , with a context-optimised part in the prefill or the decode pool.
         </li>
       </Deeper>
     </>
