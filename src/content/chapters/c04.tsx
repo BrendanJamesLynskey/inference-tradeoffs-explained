@@ -2,7 +2,7 @@
 import { PoolWidget } from "@/components/interactive/lazy";
 import { TimelineEq } from "@/components/mdx/equations";
 import { V } from "@/components/mdx/V";
-import { inferenceCh, kernelsCh } from "@/lib/site";
+import { inferenceCh, kernelsCh, racksCh } from "@/lib/site";
 
 import { A, Cite, Deeper, RecordedTable, Sec } from "../ui";
 import type { ChapterContent } from "./types";
@@ -137,6 +137,13 @@ function Body(): JSX.Element {
           GPU Kernels Explained:{" "}
           <A href={kernelsCh("02-roofline")}>the roofline</A>: why prefill and
           decode want different hardware.
+        </li>
+        <li>
+          The hardware underneath, AI Racks Explained:{" "}
+          <A href={racksCh("08-disaggregated-inference")}>
+            disaggregated inference on a rack
+          </A>
+          , the pool split inside one rack.
         </li>
       </Deeper>
     </>

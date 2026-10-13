@@ -14,6 +14,7 @@ export const ARCHITECTURES_URL =
 export const KERNELS_URL = "https://gpu-kernels-explained.vercel.app";
 export const NUMERICS_URL = "https://numerics-explained.vercel.app";
 export const SILICON_URL = "https://systolic-arrays-explained.vercel.app";
+export const RACKS_URL = "https://ai-racks-explained.vercel.app";
 /** The first of the agent sites (the "Agents" group of the switch). */
 export const HARNESSES_URL = "https://agent-harnesses-explained.vercel.app";
 
@@ -53,6 +54,7 @@ export const numericsCh = (slug: string): string =>
   `${NUMERICS_URL}/learn/${slug}`;
 export const siliconCh = (slug: string): string =>
   `${SILICON_URL}/learn/${slug}`;
+export const racksCh = (slug: string): string => `${RACKS_URL}/learn/${slug}`;
 export const inferenceCh = (slug: string): string =>
   `${INFERENCE_URL}/learn/${slug}`;
 export const architecturesCh = (slug: string): string =>
