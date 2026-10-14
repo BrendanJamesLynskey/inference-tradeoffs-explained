@@ -21,6 +21,12 @@ export const HARNESSES_URL = "https://agent-harnesses-explained.vercel.app";
 export const GITHUB_URL =
   "https://github.com/BrendanJamesLynskey/inference-tradeoffs-explained";
 
+/** The author, credited in one quiet line at the foot of the About page. */
+export const AUTHOR = {
+  name: "Brendan Lynskey",
+  url: "https://github.com/BrendanJamesLynskey",
+} as const;
+
 /** The simulator whose sweep and engine this site is built on. */
 export const SIM_REPO =
   "https://github.com/BrendanJamesLynskey/Disaggregated_Inference_Sim";
