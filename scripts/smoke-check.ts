@@ -41,6 +41,7 @@ const SWITCH = [
   'data-site-group="hardware"',
   'href="https://ai-racks-explained.vercel.app"',
   'data-site-place="tradeoffs"',
+  'data-site-brand="true" class="focus-ring whitespace-nowrap rounded text-sm font-medium tracking-tight" href="/">Inference Trade-offs Explained</a>',
   'data-site-key="inference"',
   'href="https://systolic-arrays-explained.vercel.app"',
   'href="https://inference-tradeoffs-explained.vercel.app"',
