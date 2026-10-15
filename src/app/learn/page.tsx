@@ -25,8 +25,8 @@ export default function LearnIndex(): JSX.Element {
         states the simulator recorded, then its row of the matrix (or, for the
         levers the sweep does not vary, the simulator&apos;s recorded results in
         the same colours), then why it behaves as measured, with links to the
-        family&apos;s Kernels, Numerics and Silicon visuals, and its papers. How
-        each mechanism works is explained step by step on{" "}
+        family&apos;s Kernels, Numerics and Systolic visuals, and its papers.
+        How each mechanism works is explained step by step on{" "}
         <a
           href={INFERENCE_URL}
           className="focus-ring rounded text-accent underline underline-offset-2 dark:text-indigo-300"

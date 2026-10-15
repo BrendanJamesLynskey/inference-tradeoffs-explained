@@ -156,7 +156,7 @@ export default function HomePage(): JSX.Element {
         <a href={SILICON_URL} className={A}>
           Systolic Arrays Explained
         </a>{" "}
-        (the silicon underneath). This one is about the decisions. How it was
+        (inside a matrix engine). This one is about the decisions. How it was
         built:{" "}
         <Link href="/about" className={A}>
           about

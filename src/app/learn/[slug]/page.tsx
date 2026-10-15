@@ -4,7 +4,7 @@
  * the matrix (the sweep's measured effects, animated across the
  * workloads), or for the levers the sweep does not vary the simulator's
  * recorded results in the same colours; then why it behaves as measured,
- * with links to the family's Kernels, Numerics and Silicon visuals; the
+ * with links to the family's Kernels, Numerics and Systolic visuals; the
  * sweep's numbers lever by lever; and the papers. Server Component,
  * statically generated for all thirteen chapters.
  */
