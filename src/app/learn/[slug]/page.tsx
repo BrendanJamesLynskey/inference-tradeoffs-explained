@@ -36,7 +36,12 @@ export async function generateMetadata({
 }) {
   const c = CHAPTERS.find((x) => x.slug === params.slug);
   return c
-    ? withShare(`/learn/${c.slug}`, { title: c.title, description: c.summary })
+    ? withShare(
+        `/learn/${c.slug}`,
+        { title: c.title, description: c.summary },
+        undefined,
+        true,
+      )
     : {};
 }
 
