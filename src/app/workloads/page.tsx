@@ -10,12 +10,13 @@ import { V } from "@/components/mdx/V";
 import { recommend } from "@/lib/tradeoffs/cases";
 import { SWEEP } from "@/lib/tradeoffs/data";
 import { HW_LABEL, WORKLOADS, WORKLOAD_LABEL } from "@/lib/tradeoffs/metrics";
+import { withShare } from "@/lib/share";
 
-export const metadata = {
+export const metadata = withShare("/workloads", {
   title: "Workload case studies",
   description:
     "Chat, a coding agent, offline batch, long-context RAG and real-time voice: the best configuration for each under its SLOs, measured.",
-};
+});
 
 export default function WorkloadsIndex(): JSX.Element {
   return (

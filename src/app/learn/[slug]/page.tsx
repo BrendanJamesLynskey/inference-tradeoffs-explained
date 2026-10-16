@@ -16,6 +16,7 @@ import { DeltaEq } from "@/components/mdx/equations";
 import { CONTENT } from "@/content/chapters";
 import { LeverTables } from "@/content/LeverTables";
 import { References } from "@/content/ui";
+import { withShare } from "@/lib/share";
 import { CHAPTERS } from "@/lib/tradeoffs/chapters";
 import { FAMILY_LABEL } from "@/lib/tradeoffs/metrics";
 import { matrixProps } from "@/lib/tradeoffs/props";
@@ -34,7 +35,9 @@ export async function generateMetadata({
   params: { slug: string };
 }) {
   const c = CHAPTERS.find((x) => x.slug === params.slug);
-  return c ? { title: c.title, description: c.summary } : {};
+  return c
+    ? withShare(`/learn/${c.slug}`, { title: c.title, description: c.summary })
+    : {};
 }
 
 const NAV =

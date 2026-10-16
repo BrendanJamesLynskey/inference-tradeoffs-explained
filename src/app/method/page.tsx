@@ -17,12 +17,13 @@ import {
 } from "@/lib/tradeoffs/metrics";
 import { caveats } from "@/lib/tradeoffs/values";
 import { simFile, SIM_REPO } from "@/lib/site";
+import { withShare } from "@/lib/share";
 
-export const metadata = {
+export const metadata = withShare("/method", {
   title: "Method",
   description:
     "How the trade-off sweep was run: the cluster, the levers, the workloads and their sources, capacity under SLOs, illustrative prices, and every modelling caveat.",
-};
+});
 
 const A =
   "focus-ring rounded text-accent underline underline-offset-2 dark:text-indigo-300";
