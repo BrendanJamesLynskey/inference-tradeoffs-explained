@@ -3,15 +3,7 @@ import Link from "next/link";
 import { ParetoExplorer } from "@/components/interactive/lazy";
 import { V } from "@/components/mdx/V";
 import { explorerProps } from "@/lib/tradeoffs/props";
-import {
-  ARCHITECTURES_URL,
-  DECODER_URL,
-  INFERENCE_URL,
-  KERNELS_URL,
-  NUMERICS_URL,
-  SILICON_URL,
-  SIM_REPO,
-} from "@/lib/site";
+import { SIM_REPO } from "@/lib/site";
 
 const A =
   "focus-ring rounded underline decoration-accent/40 underline-offset-4 hover:decoration-accent";
@@ -132,32 +124,77 @@ export default function HomePage(): JSX.Element {
         .
       </p>
       <p className="mt-12 text-sm text-neutral-600 dark:text-neutral-400">
-        Part of a family of companion sites: the{" "}
-        <a href={DECODER_URL} className={A}>
-          Transformer Decoder Explainer
-        </a>{" "}
-        (one forward pass),{" "}
-        <a href={INFERENCE_URL} className={A}>
-          LLM Inference Explained
-        </a>{" "}
-        (how serving works),{" "}
-        <a href={ARCHITECTURES_URL} className={A}>
-          LLM Architectures Explained
-        </a>{" "}
-        (how the models differ),{" "}
-        <a href={KERNELS_URL} className={A}>
-          GPU Kernels Explained
-        </a>{" "}
-        (how a GPU runs the maths),{" "}
-        <a href={NUMERICS_URL} className={A}>
-          Numerics Explained
-        </a>{" "}
-        (the number formats, and what they do to accuracy) and{" "}
-        <a href={SILICON_URL} className={A}>
-          Systolic Arrays Explained
-        </a>{" "}
-        (inside a matrix engine). This one is about the decisions. How it was
-        built:{" "}
+        Part of a family of sixteen companion sites in four tracks, all in the
+        site menu above: Foundations (
+        <a
+          href="https://transformer-decoder-explained.vercel.app"
+          className={A}
+        >
+          Decoder
+        </a>
+        ,{" "}
+        <a
+          href="https://transformer-training-explained.vercel.app"
+          className={A}
+        >
+          Training
+        </a>
+        ), Hardware (
+        <a href="https://gpu-kernels-explained.vercel.app" className={A}>
+          Kernels
+        </a>
+        ,{" "}
+        <a href="https://systolic-arrays-explained.vercel.app" className={A}>
+          Systolic
+        </a>
+        ,{" "}
+        <a href="https://ai-accelerators-explained.vercel.app" className={A}>
+          Accelerators
+        </a>
+        ,{" "}
+        <a href="https://ai-racks-explained.vercel.app" className={A}>
+          Racks
+        </a>
+        ), Inference (
+        <a href="https://llm-inference-explained.vercel.app" className={A}>
+          Serving
+        </a>
+        ,{" "}
+        <a href="https://llm-architectures-explained.vercel.app" className={A}>
+          Architectures
+        </a>
+        ,{" "}
+        <a href="https://numerics-explained.vercel.app" className={A}>
+          Numerics
+        </a>
+        , <strong className="font-medium">Trade-offs</strong>) and Agents (
+        <a href="https://agent-harnesses-explained.vercel.app" className={A}>
+          Harnesses
+        </a>
+        ,{" "}
+        <a href="https://agent-protocols-explained.vercel.app" className={A}>
+          Protocols
+        </a>
+        ,{" "}
+        <a href="https://agent-context-explained.vercel.app" className={A}>
+          Context
+        </a>
+        ,{" "}
+        <a
+          href="https://agent-orchestration-explained.vercel.app"
+          className={A}
+        >
+          Orchestration
+        </a>
+        ,{" "}
+        <a href="https://agent-evals-explained.vercel.app" className={A}>
+          Evals
+        </a>
+        ,{" "}
+        <a href="https://agent-security-explained.vercel.app" className={A}>
+          Security
+        </a>
+        ). This one is about the decisions. How it was built:{" "}
         <Link href="/about" className={A}>
           about
         </Link>
