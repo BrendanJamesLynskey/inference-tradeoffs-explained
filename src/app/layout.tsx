@@ -10,10 +10,11 @@ import type { ReactNode } from "react";
 
 import { SiteHeader } from "@/components/ui/SiteHeader";
 import { SITE_URL } from "@/lib/site";
+import { withShare } from "@/lib/share";
 
 import "./globals.css";
 
-export const metadata: Metadata = {
+export const metadata: Metadata = withShare("/", {
   metadataBase: new URL(SITE_URL),
   title: {
     default: "Inference Trade-offs Explained",
@@ -21,7 +22,7 @@ export const metadata: Metadata = {
   },
   description:
     "Which serving lever helps which metric, for which workload: architectural trade-offs in LLM inference, measured by a simulator sweep. A Pareto explorer, a lever-by-metric matrix and a live what-if.",
-};
+});
 
 export default function RootLayout({
   children,

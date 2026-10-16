@@ -10,12 +10,13 @@ import { SWEEP, slimLevers } from "@/lib/tradeoffs/data";
 import { NEUTRAL, pctOf, signChanges } from "@/lib/tradeoffs/effects";
 import { WORKLOADS, WORKLOAD_LABEL } from "@/lib/tradeoffs/metrics";
 import { matrixProps } from "@/lib/tradeoffs/props";
+import { withShare } from "@/lib/share";
 
-export const metadata = {
+export const metadata = withShare("/matrix", {
   title: "Lever × metric matrix",
   description:
     "Every serving lever against every metric, measured: better or worse than the baseline and by how much, for each workload and device.",
-};
+});
 
 export default function MatrixPage(): JSX.Element {
   const mx = matrixProps();

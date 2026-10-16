@@ -8,12 +8,13 @@ import { WhatIf } from "@/components/interactive/lazy";
 import { V } from "@/components/mdx/V";
 import { TimelineEq } from "@/components/mdx/equations";
 import { whatIfProps } from "@/lib/tradeoffs/props";
+import { withShare } from "@/lib/share";
 
-export const metadata = {
+export const metadata = withShare("/what-if", {
   title: "Live what-if",
   description:
     "Toggle serving levers and re-run the simulator's own engine in the browser on the sweep's recorded requests: before/after metrics and where the time went.",
-};
+});
 
 export default function WhatIfPage(): JSX.Element {
   const p = whatIfProps();

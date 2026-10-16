@@ -8,12 +8,13 @@ import { ParetoExplorer } from "@/components/interactive/lazy";
 import { V } from "@/components/mdx/V";
 import { FrontEq } from "@/components/mdx/equations";
 import { explorerProps } from "@/lib/tradeoffs/props";
+import { withShare } from "@/lib/share";
 
-export const metadata = {
+export const metadata = withShare("/explore", {
   title: "Pareto explorer",
   description:
     "Every swept serving configuration on two chosen metrics, with the Pareto front, animated across workloads and SLO filters.",
-};
+});
 
 const A =
   "focus-ring rounded text-accent underline underline-offset-2 dark:text-indigo-300";

@@ -1,9 +1,12 @@
+import type { Route } from "next";
 import Link from "next/link";
 
+import { CheckedStrip, StartButton } from "@/components/ui/Landing";
 import { ParetoExplorer } from "@/components/interactive/lazy";
 import { V } from "@/components/mdx/V";
 import { explorerProps } from "@/lib/tradeoffs/props";
 import { SIM_REPO } from "@/lib/site";
+import { CHAPTERS } from "@/lib/tradeoffs/chapters";
 
 const A =
   "focus-ring rounded underline decoration-accent/40 underline-offset-4 hover:decoration-accent";
@@ -41,51 +44,18 @@ export default function HomePage(): JSX.Element {
       <h1 className="mt-4 text-4xl font-semibold tracking-tight sm:text-5xl">
         Which lever helps which metric, for which workload
       </h1>
-      <div className="mt-8 grid items-start gap-8 md:grid-cols-[1fr_minmax(0,26rem)]">
+      <div className="mt-6 grid items-start gap-8 md:grid-cols-[1fr_minmax(0,26rem)]">
         <div>
           <p className="max-w-2xl text-lg text-neutral-600 dark:text-neutral-300">
-            Serving a language model is a stack of decisions: how to batch, how
-            to hold the KV cache, whether to split prefill from decode, how to
-            split the model across GPUs, which number formats, whether to draft
-            tokens speculatively. Each lever helps some measures and costs
-            others, and the answer changes with the workload. This site is
-            organised around those decisions.
+            An interactive map of the serving levers (batching, KV memory,
+            disaggregation, parallelism, quantisation, speculation) and what
+            each one does to each metric.
           </p>
-          <p className="mt-4 max-w-2xl text-neutral-600 dark:text-neutral-300">
-            Nothing here is asserted. Every number comes from a recorded sweep
-            of a discrete-event simulator: <V of="meta.levers" fmt="int" />{" "}
-            levers and the baseline, <V of="meta.workloads" fmt="int" />{" "}
-            workloads and <V of="meta.devices" fmt="int" /> devices,{" "}
-            <V of="meta.points" fmt="int" /> configurations of the same{" "}
-            <V of="meta.gpus" fmt="int" /> GPUs serving <V of="meta.model" />.
-            For example, chunked prefill with a small budget changes goodput per
-            GPU on H100 by{" "}
-            <V
-              of="effect.chat.h100.chunked-512.goodput_req_s_per_gpu"
-              fmt="signed"
-            />{" "}
-            for chat but by{" "}
-            <V
-              of="effect.coding-agent.h100.chunked-512.goodput_req_s_per_gpu"
-              fmt="signed"
-            />{" "}
-            for a coding agent.
-          </p>
-          <p className="mt-4 max-w-2xl text-neutral-600 dark:text-neutral-300">
-            The simulator is{" "}
-            <a href={SIM_REPO} className={A}>
-              Disaggregated_Inference_Sim
-            </a>
-            . Its JavaScript engine runs in your browser for the what-if, and
-            reproduces the sweep&apos;s recorded latencies exactly. How the
-            sweep was run, and what is illustrative:{" "}
-            <Link href="/method" className={A}>
-              the method
-            </Link>
-            .
-          </p>
+          <div className="mt-6">
+            <StartButton href={`/learn/${CHAPTERS[0]!.slug}` as Route} />
+          </div>
         </div>
-        <div className="min-w-0">
+        <div data-hero-figure className="min-w-0">
           <ParetoExplorer
             points={ex.points}
             workloads={ex.workloads}
@@ -96,6 +66,58 @@ export default function HomePage(): JSX.Element {
           />
         </div>
       </div>
+      <CheckedStrip href="/about#checks">
+        For every one of the <V of="meta.points" fmt="int" /> sweep points, the
+        simulator&apos;s JavaScript engine (the one the what-if runs in your
+        browser) reproduces the recorded TTFT, TPOT and ITL percentiles of the
+        Python run exactly.
+      </CheckedStrip>
+      <section aria-labelledby="learn-heading" className="mt-12">
+        <h2 id="learn-heading" className="text-xl font-semibold tracking-tight">
+          What you&apos;ll learn
+        </h2>
+        <p className="mt-4 max-w-2xl text-neutral-600 dark:text-neutral-300">
+          Serving a language model is a stack of decisions: how to batch, how to
+          hold the KV cache, whether to split prefill from decode, how to split
+          the model across GPUs, which number formats, whether to draft tokens
+          speculatively. Each lever helps some measures and costs others, and
+          the answer changes with the workload. This site is organised around
+          those decisions.
+        </p>
+        <p className="mt-4 max-w-2xl text-neutral-600 dark:text-neutral-300">
+          Nothing here is asserted. Every number comes from a recorded sweep of
+          a discrete-event simulator: <V of="meta.levers" fmt="int" /> levers
+          and the baseline, <V of="meta.workloads" fmt="int" /> workloads and{" "}
+          <V of="meta.devices" fmt="int" /> devices,{" "}
+          <V of="meta.points" fmt="int" /> configurations of the same{" "}
+          <V of="meta.gpus" fmt="int" /> GPUs serving <V of="meta.model" />. For
+          example, chunked prefill with a small budget changes goodput per GPU
+          on H100 by{" "}
+          <V
+            of="effect.chat.h100.chunked-512.goodput_req_s_per_gpu"
+            fmt="signed"
+          />{" "}
+          for chat but by{" "}
+          <V
+            of="effect.coding-agent.h100.chunked-512.goodput_req_s_per_gpu"
+            fmt="signed"
+          />{" "}
+          for a coding agent.
+        </p>
+        <p className="mt-4 max-w-2xl text-neutral-600 dark:text-neutral-300">
+          The simulator is{" "}
+          <a href={SIM_REPO} className={A}>
+            Disaggregated_Inference_Sim
+          </a>
+          . Its JavaScript engine runs in your browser for the what-if, and
+          reproduces the sweep&apos;s recorded latencies exactly. How the sweep
+          was run, and what is illustrative:{" "}
+          <Link href="/method" className={A}>
+            the method
+          </Link>
+          .
+        </p>
+      </section>
       <nav aria-label="Tools" className="mt-12 grid gap-4 sm:grid-cols-3">
         {TOOLS.map((t) => (
           <Link

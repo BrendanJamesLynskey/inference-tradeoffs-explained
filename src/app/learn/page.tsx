@@ -6,12 +6,13 @@ import Link from "next/link";
 
 import { CHAPTERS } from "@/lib/tradeoffs/chapters";
 import { INFERENCE_URL } from "@/lib/site";
+import { withShare } from "@/lib/share";
 
-export const metadata = {
+export const metadata = withShare("/learn", {
   title: "The levers",
   description:
     "One page per serving lever: what it changes, and what the sweep measured it doing to every metric.",
-};
+});
 
 export default function LearnIndex(): JSX.Element {
   return (

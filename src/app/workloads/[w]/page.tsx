@@ -30,6 +30,7 @@ import {
 } from "@/lib/tradeoffs/metrics";
 import { explorerProps } from "@/lib/tradeoffs/props";
 import { harnessesCh } from "@/lib/site";
+import { withShare } from "@/lib/share";
 
 export const dynamicParams = false;
 
@@ -40,10 +41,10 @@ export async function generateStaticParams(): Promise<{ w: string }[]> {
 export async function generateMetadata({ params }: { params: { w: string } }) {
   const w = params.w as WorkloadKey;
   return WORKLOADS.includes(w)
-    ? {
+    ? withShare(`/workloads/${w}`, {
         title: `${WORKLOAD_LABEL[w]}: case study`,
         description: `The best serving configuration for ${WORKLOAD_LABEL[w].toLowerCase()} under its SLOs, its Pareto front, and the levers that change sign, measured by the simulator.`,
-      }
+      })
     : {};
 }
 

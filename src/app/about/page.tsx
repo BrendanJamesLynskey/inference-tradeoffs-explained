@@ -20,12 +20,13 @@ import {
   SIM_REPO,
   repoFile,
 } from "@/lib/site";
+import { withShare } from "@/lib/share";
 
-export const metadata = {
+export const metadata = withShare("/about", {
   title: "About",
   description:
     "How Inference Trade-offs Explained is built: a vendored simulator sweep as the single number source, the simulator's own engine running live, and the checks that tie them together.",
-};
+});
 
 const A =
   "focus-ring rounded text-accent underline underline-offset-2 dark:text-indigo-300";
@@ -96,7 +97,7 @@ export default function AboutPage(): JSX.Element {
           page says how the sweep was run and lists every caveat.
         </p>
 
-        <h2>The checks</h2>
+        <h2 id="checks">The checks</h2>
         <ul>
           <li>
             <strong>Engine parity.</strong>{" "}
