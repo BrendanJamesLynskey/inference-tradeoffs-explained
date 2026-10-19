@@ -5,7 +5,8 @@
  * workloads), or for the levers the sweep does not vary the simulator's
  * recorded results in the same colours; then why it behaves as measured,
  * with links to the family's Kernels, Numerics and Systolic visuals; the
- * sweep's numbers lever by lever; and the papers. Server Component,
+ * sweep's numbers lever by lever; Check yourself and What to remember
+ * (brief 44); and the papers. Server Component,
  * statically generated for all thirteen chapters.
  */
 import Link from "next/link";
@@ -14,7 +15,9 @@ import { notFound } from "next/navigation";
 import { LeverMatrix } from "@/components/interactive/lazy";
 import { DeltaEq } from "@/components/mdx/equations";
 import { CONTENT } from "@/content/chapters";
+import { LEARN, LearnBlock } from "@/content/learn";
 import { LeverTables } from "@/content/LeverTables";
+import { CHECK_YOURSELF_ID } from "@/components/learn/CheckYourself";
 import { References } from "@/content/ui";
 import { withShare } from "@/lib/share";
 import { CHAPTERS } from "@/lib/tradeoffs/chapters";
@@ -61,6 +64,7 @@ export default function ChapterPage({
   const prev = CHAPTERS[i - 1];
   const next = CHAPTERS[i + 1];
   const { Hero, Row, Body, refs } = content;
+  const learn = LEARN[ch.slug];
   return (
     <main className="mx-auto max-w-5xl px-4 py-12 sm:px-6">
       <p className="font-mono text-xs uppercase tracking-widest text-accent dark:text-indigo-300">
@@ -72,6 +76,21 @@ export default function ChapterPage({
         {ch.summary} Below, the mechanism as the simulator ran it, step by step;
         then what it measured, why it behaves that way, and the papers.
       </p>
+      {learn && (
+        <p className="mt-2 text-sm">
+          <a
+            href={`#${CHECK_YOURSELF_ID}`}
+            data-check-yourself-link
+            className="focus-ring rounded text-accent underline decoration-accent/40 underline-offset-2 hover:decoration-accent dark:text-indigo-300"
+          >
+            Check yourself ↓
+          </a>
+          <span className="text-neutral-500 dark:text-neutral-400">
+            {" "}
+            three questions and what to remember, at the end
+          </span>
+        </p>
+      )}
       <Hero />
       <section id="matrix-row" className="mt-12 scroll-mt-6">
         <h2 className="text-xl font-semibold tracking-tight">
@@ -90,6 +109,7 @@ export default function ChapterPage({
       </section>
       <Body />
       {fam && <LeverTables fam={fam} />}
+      {learn && <LearnBlock spec={learn} />}
       <References keys={refs} />
       <nav
         aria-label="Chapters"
