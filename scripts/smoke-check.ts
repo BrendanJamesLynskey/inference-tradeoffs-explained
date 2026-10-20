@@ -28,6 +28,12 @@ const CREDIT = [
   'href="https://brendanjameslynskey.github.io/">Brendan Lynskey</a>',
 ];
 
+/** The shared definitions link on /about (brief 44D). */
+const DEFINITIONS = [
+  "data-definitions-link",
+  'href="https://agent-harnesses-explained.vercel.app/definitions"',
+];
+
 type Result = { path: string; ok: boolean; detail: string };
 
 const headers: Record<string, string> = process.env.VERCEL_BYPASS
@@ -102,7 +108,7 @@ async function main(): Promise<void> {
       'id="caveat-edge"',
       VENDORED.commit.slice(0, 7),
     ]),
-    checkPage(base, "/about", [...CREDIT, "One number source"]),
+    checkPage(base, "/about", [...CREDIT, ...DEFINITIONS, "One number source"]),
     checkPage(
       base,
       "/learn",
