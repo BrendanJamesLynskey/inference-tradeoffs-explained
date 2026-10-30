@@ -19,7 +19,7 @@ export const CONTENT: Record<string, ChapterContent> = {
   "02-paged-kv-and-preemption": C02,
   "03-prefix-caching": C03,
   "04-disaggregation": C04,
-  "05-heterogeneous-and-optical-pools": C05,
+  "05-heterogeneous-pools": C05,
   "06-kv-handoff-and-compression": C06,
   "07-encoder-only-prefill": C07,
   "08-tp-pp-ep": C08,

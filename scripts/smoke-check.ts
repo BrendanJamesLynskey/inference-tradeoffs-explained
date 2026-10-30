@@ -14,7 +14,8 @@
  * the content that proves it rendered from the data: the landing page must
  * print the sweep's own numbers (looked up here with the same code), every
  * page must carry the four-track site switch with Trade-offs current, and
- * each recorded workload must be served with the vendored commit.
+ * each recorded workload must be served with the vendored commit. Chapter
+ * 5's old URL must redirect permanently (308) to its new one.
  */
 import { CHAPTERS } from "@/lib/tradeoffs/chapters";
 import { SCENARIOS } from "@/lib/tradeoffs/mech";
@@ -86,6 +87,22 @@ async function checkPage(
   }
 }
 
+/** A permanent redirect from `path` to `to` (the old chapter URL other sites link to). */
+async function checkRedirect(
+  base: string,
+  path: string,
+  to: string,
+): Promise<Result> {
+  try {
+    const res = await fetch(base + path, { redirect: "manual", headers });
+    const loc = res.headers.get("location") ?? "";
+    const ok = res.status === 308 && new URL(loc, base).pathname === to;
+    return { path, ok, detail: `${res.status} -> ${loc}` };
+  } catch (err) {
+    return { path, ok: false, detail: (err as Error).message };
+  }
+}
+
 async function main(): Promise<void> {
   const base = (process.argv[2] ?? "http://localhost:3000").replace(/\/$/, "");
   const checks: Promise<Result>[] = [
@@ -122,6 +139,11 @@ async function main(): Promise<void> {
         "data-self-check=",
         ...SWITCH,
       ]),
+    ),
+    checkRedirect(
+      base,
+      "/learn/05-heterogeneous-and-optical-pools",
+      "/learn/05-heterogeneous-pools",
     ),
     checkPage(
       base,

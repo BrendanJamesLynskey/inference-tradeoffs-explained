@@ -123,7 +123,7 @@ the all-reduce, its cost model):
   against the engine's). The parallelism and quantisation animations call
   the engine's cost model live; `cost_model.json` holds the Python cost
   model's steps and the tests require the same numbers. Results the sweep
-  does not vary (heterogeneous and optical pools, links, CED, power caps)
+  does not vary (heterogeneous pools, links, CED, power caps)
   are quoted cell by cell from the vendored results.md (`md|…` value paths).
 - **Animations** are sequences of states computed from the data; a frame is
   a pure function of (state, t), key frames are unit-tested (the timeline's
@@ -158,10 +158,9 @@ the method page):
 - The roofline efficiencies and power coefficients of the simulator's cost
   model are illustrative, and accuracy is not simulated.
 - The chapters' scenarios are small and chosen to show each mechanism (a
-  few requests, named in each animation); the optical prefill pool is a
-  hypothetical device with illustrative coefficients, the in-transit
-  compression stage is illustrative, and the CED model is a dense proxy of
-  the paper's design.
+  few requests, named in each animation); the co-packaged optics switch
+  link is illustrative, and the CED model is a dense proxy of the paper's
+  design.
 
 ## Sharing
 

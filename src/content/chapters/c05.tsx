@@ -1,4 +1,4 @@
-/** Chapter 5: heterogeneous pools and the optical prefill pool. */
+/** Chapter 5: heterogeneous pools (H100 and A100). */
 import { PoolWidget } from "@/components/interactive/lazy";
 import { TimelineEq } from "@/components/mdx/equations";
 import { V } from "@/components/mdx/V";
@@ -8,8 +8,6 @@ import { A, Cite, Deeper, RecordedTable, Sec } from "../ui";
 import type { ChapterContent } from "./types";
 
 const m = (variant: string, key: string) => `mech|hetero|${variant}|${key}`;
-const FOPT =
-  "https://brendanjameslynskey.github.io/LLM_Hub_Fourier_Optics_Inference/";
 
 function Hero(): JSX.Element {
   return (
@@ -21,9 +19,9 @@ function Hero(): JSX.Element {
       summary={
         <>
           One prefill and one decode instance (Llama-3-8B, one device each),
-          fourteen requests at eight per second. Swap the device of either pool,
-          or serve an FFT-mixing model whose prefill runs on a hypothetical
-          optical transform engine (illustrative coefficients).
+          fourteen requests at eight per second. Swap the device of either pool
+          between H100 and A100, or give a slow A100 prefill pool a second
+          instance.
         </>
       }
       equation={<TimelineEq />}
@@ -37,8 +35,8 @@ function Row(): JSX.Element {
     <>
       <p className="mt-3 max-w-3xl text-sm text-neutral-600 dark:text-neutral-400">
         The sweep does not vary pool hardware; these are the simulator&apos;s
-        recorded runs (results.md sections 10 and 11), in the matrix&apos;s
-        colours against the all-H100 pools.
+        recorded runs (results.md section 10), in the matrix&apos;s colours
+        against the all-H100 pools.
       </p>
       <RecordedTable
         section={10}
@@ -47,6 +45,7 @@ function Row(): JSX.Element {
           "H100 prefill + H100 decode (--device h100)",
           "H100 prefill + A100 decode",
           "A100 prefill + H100 decode",
+          "A100 prefill + A100 decode",
           "2x A100 prefill + H100 decode",
         ]}
         cols={[
@@ -62,26 +61,6 @@ function Row(): JSX.Element {
           <>
             Heterogeneous pools, Llama-3-8B shape, eight requests per second.
             Silicon dollars are illustrative (die area and yield, not prices).
-          </>
-        }
-      />
-      <RecordedTable
-        section={11}
-        table={5}
-        rows={[
-          "1P1D H100",
-          "1P1D H100, GPU FFT at 1/16",
-          "optical-fft prefill (defaults) + H100 decode",
-          "optical-fft prefill (optimistic) + H100 decode",
-        ]}
-        cols={["TTFT p99", "Goodput (req/s)", "J / token", "tok/s per $1000"]}
-        better={["min", "max", "min", "max"]}
-        baseline="1P1D H100"
-        caption={
-          <>
-            An FFT-mixing model (Hyena-2 with circulant mixing, last-token head:
-            the most transform-heavy variant) with a hypothetical optical
-            prefill pool. Every optical coefficient is illustrative.
           </>
         }
       />
@@ -106,33 +85,33 @@ function Body(): JSX.Element {
           <V of={m("a100-h100", "ttft_p99")} fmt="ms" />.
         </p>
         <p>
-          The optical prefill pool asks the same question of a device that does
-          not exist: a Fourier-optical transform engine co-packaged with an
-          H100-class part, which could only help models whose mixing is an FFT
-          (not attention). With optimistic coefficients its TTFT p99 is{" "}
-          <V of={m("circ-optical", "ttft_p99")} fmt="ms" />, against{" "}
-          <V of={m("circ-gpu", "ttft_p99")} fmt="ms" /> on an H100 that runs the
-          FFT itself; with the default coefficients prompts queue without bound
-          (<V of={m("circ-optical-default", "ttft_p99")} fmt="ms" />
-          ).
+          The remedy for a slow prefill device is more of it: two A100 prefill
+          instances in front of the same H100 decode bring TTFT p99 back to{" "}
+          <V of={m("2a100-h100", "ttft_p99")} fmt="ms" />. The prefill pool has
+          to match the prompt rate in FLOPs, whatever part supplies them.
         </p>
       </Sec>
-      <Sec id="why" title="Why the optical pool mostly loses">
+      <Sec id="why" title="Why each pool wants a different part">
         <p>
-          A transform engine speeds up only the FFT part of a prefill, and in a
-          GPU that part is already fast unless the GPU runs FFTs far below its
-          matmul rate. Each optical pass also pays for conversions between the
-          analogue and digital worlds and for rewriting the optical mask, and a
-          static power for lasers that the GPU does not. The recorded
-          break-even: against a GPU running FFTs at full rate the optical pool
-          never matches its TTFT at any ENOB or mask rate tried (results.md
-          section 13:{" "}
-          <V of="md|13|0|GPU FFT at 1x|Lowest ENOB with TTFT p99 <= GPU" />
-          ), and it matches its energy only below{" "}
-          <V of="md|13|0|GPU FFT at 1x|Static power at equal J/token" /> of
-          static power. The Fourier Optics for Inference series (
-          <A href={FOPT}>its hub</A>) works through why, and reaches the same
-          mostly negative verdict.
+          Prefill is bound by compute and decode by memory bandwidth, so a part
+          that is short of FLOPs but not of bandwidth costs little in the decode
+          pool and a great deal in the prefill pool. At the recorded load the
+          A100 decode pool still meets every SLO, at{" "}
+          <V of="md|10|0|H100 prefill + A100 decode|J / token" /> joules per
+          token against{" "}
+          <V of="md|10|0|H100 prefill + H100 decode (--device h100)|J / token" />{" "}
+          for all-H100 pools, while the single A100 prefill pool serves{" "}
+          <V of="md|10|0|A100 prefill + H100 decode|Goodput (req/s)" /> requests
+          per second inside the SLOs. Two A100 prefill instances recover the
+          goodput (
+          <V of="md|10|0|2x A100 prefill + H100 decode|Goodput (req/s)" />{" "}
+          req/s) but buy it with more silicon and energy: per $1000 of
+          illustrative silicon they serve{" "}
+          <V of="md|10|0|2x A100 prefill + H100 decode|tok/s per $1000" />{" "}
+          tokens per second, against{" "}
+          <V of="md|10|0|H100 prefill + H100 decode (--device h100)|tok/s per $1000" />{" "}
+          for the H100 pair. Whether a mixed fleet pays depends on what the
+          older parts cost, which the simulator does not price.
         </p>
         <p>
           Hardware choice inside one pool is{" "}
@@ -146,10 +125,6 @@ function Body(): JSX.Element {
         </p>
       </Sec>
       <Deeper>
-        <li>
-          Fourier Optics for Inference: <A href={FOPT}>the series hub</A>, the
-          optical prefill pool and its break-even in full.
-        </li>
         <li>
           GPU Kernels Explained:{" "}
           <A href={kernelsCh("02-roofline")}>the roofline</A>.

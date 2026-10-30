@@ -331,7 +331,7 @@ export const LEARN: Record<string, LearnSpec> = {
     ],
     keep: "Split for the decode tail; size the pools for the workload.",
   },
-  "05-heterogeneous-and-optical-pools": {
+  "05-heterogeneous-pools": {
     checks: [
       {
         id: "t05-q1",
@@ -376,20 +376,20 @@ export const LEARN: Record<string, LearnSpec> = {
       {
         id: "t05-q3",
         n: 3,
-        q: "Why does the hypothetical optical prefill pool mostly lose?",
+        q: "The A100 prefill pool cannot keep up. What brings TTFT back?",
         choices: [
-          "Light is slower than electricity",
-          "It speeds up only the FFT part, and pays for conversions, mask rewrites and laser power",
-          "It cannot hold the weights",
+          "An A100 decode pool as well",
+          "A second A100 prefill instance: the pool must match the prompt rate in FLOPs",
+          "A faster link between the pools",
         ],
         answer: 1,
-        href: "#why",
-        more: "Why the optical pool mostly loses",
+        href: "#mechanism",
+        more: "Each phase on the device that suits it",
         why: (
           <>
-            A GPU already runs FFTs fast, and every optical pass pays for
-            analogue-digital conversion and a static laser power the GPU does
-            not.
+            Two A100 prefill instances bring TTFT p99 back to{" "}
+            <V of={mech("hetero", "2a100-h100", "ttft_p99")} fmt="ms" />, at the
+            cost of more silicon and energy per token.
           </>
         ),
       },
@@ -398,7 +398,7 @@ export const LEARN: Record<string, LearnSpec> = {
       "Separate pools can use different hardware: FLOPs for prefill, bandwidth for decode.",
       "A cheaper, bandwidth-rich part can serve decode inside the SLO.",
       "An under-powered prefill pool queues prompts without bound.",
-      "An optical transform engine helps only FFT mixing, and mostly loses to a GPU.",
+      "A slow prefill part needs more instances to match the prompt rate: more silicon, more energy.",
     ],
     keep: "Match each pool's hardware to its bound: compute for prefill, memory for decode.",
   },
@@ -444,7 +444,7 @@ export const LEARN: Record<string, LearnSpec> = {
       {
         id: "t06-q3",
         n: 3,
-        q: "FP8 compression in transit on the same 25 GbE link: what does TPOT p99 become, in ms?",
+        q: "FP8 compression on the prefill GPU, same 25 GbE link: what does TPOT p99 become, in ms?",
         input: "number",
         of: mech("handoff", "eth-25g-fp8", "tpot_p99"),
         fmt: "ms",
@@ -463,7 +463,7 @@ export const LEARN: Record<string, LearnSpec> = {
       "Every disaggregated request ships its prompt's KV cache across the link.",
       "The link is a third resource with its own queue.",
       "It matters when bytes times rate nears the bandwidth; then compression is a prerequisite.",
-      "Compressing in transit costs the GPU nothing; on the GPU it costs one elementwise pass.",
+      "Compressing on the prefill GPU costs one elementwise pass per hand-off.",
     ],
     keep: "Link load = hand-off bytes × request rate ÷ bandwidth: keep it well below one.",
   },

@@ -100,17 +100,22 @@ function Body(): JSX.Element {
             fmt="signed"
           />{" "}
           on offline batch, which only wants throughput. A different split (two
-          smaller prefill instances) does not rescue it: chat{" "}
+          smaller prefill instances) does not rescue chat (
           <V
             of={e("chat", "disagg-2p1d", "goodput_req_s_per_gpu")}
             fmt="signed"
           />
-          , voice{" "}
+          ); on voice it gains{" "}
           <V
             of={e("voice", "disagg-2p1d", "goodput_req_s_per_gpu")}
             fmt="signed"
           />
-          .
+          , against{" "}
+          <V
+            of={e("voice", "disagg-1p1d", "goodput_req_s_per_gpu")}
+            fmt="signed"
+          />{" "}
+          for the even split.
         </p>
         <p>
           With paged decode KV and a prefix-cached prefill pool the

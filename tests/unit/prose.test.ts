@@ -13,7 +13,7 @@ import { files } from "./values.test";
 
 // names and labels that contain digits
 const NAMES =
-  /\b(?:chapters? \d+|Mistral-7B|Llama-3-8B|A100(?:-40GB)?|NF4|Hyena-2|25 GbE|[HB][12]00s?|Llama-3(?:\.2)?-(?:70|1)B|p(?:50|99)|TP[248]|PP2|FP[48]|INT[48]|BF16|W[48]A(?:8|4|16)|[12]P(?:\(TP2\))?\+?1D|1P1D|2P1D|α–β|γ[34]|1B|4xx|404|0 s|2,048|512|[0-9]+(?:px|rem)|\d{4}\.\d{5}|Okabe|99th|50th|SHA-256|OPT-13B|section \d+)\b|\+0%/g;
+  /\b(?:chapters? \d+|Mistral-7B|Llama-3-8B|A100(?:-40GB)?|NF4|25 GbE|[HB][12]00s?|Llama-3(?:\.2)?-(?:70|1)B|p(?:50|99)|TP[248]|PP2|FP[48]|INT[48]|BF16|W[48]A(?:8|4|16)|[12]P(?:\(TP2\))?\+?1D|1P1D|2P1D|α–β|γ[34]|1B|4xx|404|0 s|2,048|512|[0-9]+(?:px|rem)|\d{4}\.\d{5}|Okabe|99th|50th|SHA-256|OPT-13B|section \d+)\b|\+0%/g;
 
 function prose(src: string): string[] {
   const out: string[] = [];

@@ -1,4 +1,4 @@
-/** Chapter 6: KV hand-off links and in-transit compression. */
+/** Chapter 6: KV hand-off links and compressing the hand-off. */
 import { PoolWidget } from "@/components/interactive/lazy";
 import { HandoffEq } from "@/components/mdx/equations";
 import { V } from "@/components/mdx/V";
@@ -20,8 +20,8 @@ function Hero(): JSX.Element {
         <>
           One prefill and one decode H100 (Llama-3-8B), fourteen requests at ten
           per second with long prompts. Watch the KV link lane: on a slow link
-          the hand-offs queue, and decode waits for them. Compress the cache in
-          transit, or on the GPU before it leaves.
+          the hand-offs queue, and decode waits for them. Compress the cache on
+          the prefill GPU before it leaves.
         </>
       }
       equation={<HandoffEq />}
@@ -54,29 +54,38 @@ function Row(): JSX.Element {
           <>
             A grouped-query KV cache over each link (Llama-3-8B shape, eight
             requests per second, 2,048-token prompts). The co-packaged optics
-            link is illustrative.
+            switch link is illustrative.
           </>
         }
       />
       <RecordedTable
         section={15}
-        table={5}
-        rows={["#1", "#2", "#3"]}
+        table={3}
+        rows={["#0", "#1", "#2"]}
         cols={[
           "Load",
+          "Best preset",
           "Hand-off p99 uncompressed",
-          "in transit",
-          "Hand-off gain in transit",
+          "#5",
+          "Hand-off gain",
           "SLO uncompressed",
-          "SLO in transit",
+          "SLO compressed",
         ]}
-        better={[null, null, null, null, null, "max"]}
-        baseline="#1"
+        headers={[
+          "Load",
+          "Best preset",
+          "Hand-off p99 uncompressed",
+          "Hand-off p99 compressed",
+          "Hand-off gain",
+          "SLO uncompressed",
+          "SLO compressed",
+        ]}
+        better={[null, null, null, null, null, null, "max"]}
+        baseline="#0"
         caption={
           <>
             Where serving is transport-bound (GQA KV over 25 GbE as the load
-            rises): what FP8 compression in transit buys. The in-transit stage
-            is illustrative.
+            rises): what compressing the hand-off on the prefill GPU buys.
           </>
         }
       />
@@ -102,16 +111,13 @@ function Body(): JSX.Element {
           ).
         </p>
         <p>
-          Compressing the cache shortens every hand-off by its ratio: FP8 in
-          transit brings 25 GbE back to{" "}
-          <V of={m("eth-25g-fp8", "tpot_p99")} fmt="ms" />, and FP4 blocks made
-          on the GPU before sending to{" "}
+          Compressing the cache on the prefill GPU before it is sent shortens
+          every hand-off by its ratio: FP8 brings 25 GbE back to{" "}
+          <V of={m("eth-25g-fp8", "tpot_p99")} fmt="ms" />, and FP4 blocks to{" "}
           <V of={m("eth-25g-fp4-gpu", "tpot_p99")} fmt="ms" />. The simulator
           does not model what compression does to accuracy (eight- and four-bit
           KV are within what <Cite k="kivi" /> and <Cite k="kvquant" /> report
-          as tolerable; keeping half the frequency components is{" "}
-          <Cite k="freqkv" />
-          &apos;s default).
+          as tolerable).
         </p>
       </Sec>
       <Sec id="why" title="When the link matters">
@@ -121,14 +127,14 @@ function Body(): JSX.Element {
           the load rises. Over NVLink or InfiniBand at these rates the hand-off
           is a rounding error of end-to-end time; over 25 GbE it is the
           bottleneck, and compression is a prerequisite rather than an
-          optimisation. Compressing in transit costs the GPU nothing, but a
-          stage with a small compute budget becomes the bottleneck for the
-          heavier formats (results.md section 15 marks those transfers
-          transit-bound); compressing on the GPU costs one elementwise pass.
-          Where the bytes are mostly waiting rather than moving, any compression
-          that fits the budget helps by far more than its ratio: at the highest
-          load recorded the FP8 hand-off p99 is{" "}
-          <V of="md|15|5|#3|Hand-off gain in transit" /> shorter.
+          optimisation. Compressing on the GPU costs one elementwise pass after
+          each prefill, which shows as a slightly later first token (TTFT p99{" "}
+          <V of={m("eth-25g-fp8", "ttft_p99")} fmt="ms" /> with FP8 against{" "}
+          <V of={m("eth-25g", "ttft_p99")} fmt="ms" /> uncompressed in the
+          animation). Where the bytes are mostly waiting rather than moving,
+          compression helps by far more than its ratio: at the highest load
+          recorded the best preset (<V of="md|15|3|#2|Best preset" />) makes the
+          hand-off p99 <V of="md|15|3|#2|Hand-off gain" /> shorter.
         </p>
       </Sec>
       <Deeper>
@@ -161,5 +167,5 @@ export const C06: ChapterContent = {
   Hero,
   Row,
   Body,
-  refs: ["distserve", "kivi", "kvquant", "freqkv"],
+  refs: ["distserve", "kivi", "kvquant"],
 };

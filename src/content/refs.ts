@@ -150,14 +150,6 @@ export const REFS = {
     href: "https://arxiv.org/abs/2401.18079",
     venue: "arXiv:2401.18079",
   },
-  freqkv: {
-    short: "FreqKV",
-    authors: "Kai, Wang, Zeng et al.",
-    title:
-      "FreqKV: Key-Value Compression in Frequency Domain for Context Window Extension",
-    href: "https://arxiv.org/abs/2505.00570",
-    venue: "arXiv:2505.00570",
-  },
   dynamollm: {
     short: "DynamoLLM",
     authors: "Stojkovic, Zhang, Goiri et al.",

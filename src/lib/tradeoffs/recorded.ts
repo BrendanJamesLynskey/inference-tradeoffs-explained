@@ -1,7 +1,7 @@
 /**
  * The simulator's recorded results outside the sweep: its `results.md`
  * (vendored byte for byte with the sweep), read as tables. The chapters on
- * levers the sweep does not vary (heterogeneous and optical pools, the KV
+ * levers the sweep does not vary (heterogeneous pools, the KV
  * hand-off, CED, power) quote these cells verbatim, through value paths
  *
  *   md|<section>|<table>|<row>|<column>
