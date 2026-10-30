@@ -2,8 +2,8 @@
  * The chapters: one per lever (brief 20 §5). Each opens with its mechanism
  * animated from the simulator's recorded states, then its row of the
  * matrix (for the eight lever families the sweep varies) or the simulator's
- * recorded results in the same colours (heterogeneous and optical pools,
- * the KV hand-off, CED, power and hardware draw on its earlier sections),
+ * recorded results in the same colours (heterogeneous pools, the KV
+ * hand-off, CED, power and hardware draw on its earlier sections),
  * then why it behaves as measured and its papers. The content is in
  * src/content/chapters/.
  */
@@ -48,18 +48,18 @@ export const CHAPTERS: readonly Chapter[] = [
       "Running prefill and decode on separate GPU pools, handing each request's KV cache across a link.",
   },
   {
-    slug: "05-heterogeneous-and-optical-pools",
-    title: "Heterogeneous pools and the optical prefill pool",
+    slug: "05-heterogeneous-pools",
+    title: "Heterogeneous pools",
     family: null,
     summary:
-      "Different hardware for prefill and decode, including a hypothetical optical transform engine.",
+      "Different hardware for prefill and decode: H100 and A100 pools, each phase on the part that suits it.",
   },
   {
     slug: "06-kv-handoff-and-compression",
-    title: "KV hand-off links and in-transit compression",
+    title: "KV hand-off links and compression",
     family: null,
     summary:
-      "What the link between the pools costs, and compressing the KV cache on its way across.",
+      "What the link between the pools costs, and compressing the KV cache on the prefill GPU before it crosses.",
   },
   {
     slug: "07-encoder-only-prefill",

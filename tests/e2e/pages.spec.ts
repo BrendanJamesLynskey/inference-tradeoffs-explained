@@ -46,6 +46,20 @@ for (const scheme of ["light", "dark"] as const) {
   }
 }
 
+test("chapter 5's old URL redirects permanently to its new one", async ({
+  request,
+  page,
+}) => {
+  const res = await request.get("/learn/05-heterogeneous-and-optical-pools", {
+    maxRedirects: 0,
+  });
+  expect(res.status()).toBe(308);
+  expect(res.headers()["location"]).toBe("/learn/05-heterogeneous-pools");
+  await page.goto("/learn/05-heterogeneous-and-optical-pools");
+  await expect(page).toHaveURL(/\/learn\/05-heterogeneous-pools$/);
+  await expect(page.locator("h1").first()).toContainText("Heterogeneous pools");
+});
+
 test("the site switch: four tracks, and the brand names the site and the button says where it sits", async ({
   page,
 }) => {

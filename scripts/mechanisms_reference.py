@@ -47,7 +47,7 @@ sys.path.insert(0, str(SIM / "src"))
 
 from disagg_sim import sim as S  # noqa: E402
 from disagg_sim.hardware import (ACCELERATORS, KV_PRESETS, LINKS, MODELS, QUANT_FORMATS, CostModel,  # noqa: E402
-                                 KVTransit, Parallel)
+                                 Parallel)
 from disagg_sim.metrics import summarise  # noqa: E402
 from disagg_sim.speculative import Speculative  # noqa: E402
 from disagg_sim.workload import LengthDist, Request, chat_sessions, poisson_workload, workload_rows  # noqa: E402
@@ -63,30 +63,21 @@ NAN = struct.pack("<Q", 0x7FF8000000000000)
 def py_config(c: dict) -> S.SimConfig:
     """The Python SimConfig a JavaScript engine configuration means (the engine's keys are camelCase)."""
     def dev(key):
-        if key is None:
-            return None
-        d = ACCELERATORS[key]
-        e = c.get("engine", {})
-        if d.transform is not None and e:
-            names = {"enob": "enob", "maskRate": "mask_rate_hz", "detection": "detection", "overlap": "overlap"}
-            d = replace(d, transform=replace(d.transform, **{names[k]: v for k, v in e.items() if k in names}))
-        return d
+        return None if key is None else ACCELERATORS[key]
 
     model = MODELS[c["model"]]
     if "lmHead" in c:
         model = replace(model, prefill_lm_head=c["lmHead"])
     if "cedReplayOn" in c:
         model = replace(model, ced_replay_on=c["cedReplayOn"])
-    tr = None
-    if "kvCompress" in c:
-        tr = KVTransit(KV_PRESETS[c["kvCompress"]], where=c.get("kvCompressAt", "transit"))
     spec = c.get("speculative")
     kw = dict(
         model=model, device=dev(c.get("device", "h100")), devices_per_instance=c.get("devicesPerInstance", 4),
         mode=c.get("mode", "disagg"), n_prefill=c.get("nPrefill", 1), n_decode=c.get("nDecode", 1),
         n_colocated=c.get("nColocated", 2), link=LINKS[c.get("link", "ib-ndr")], power_cap_w=c.get("powerCap"),
         dvfs=c.get("dvfs", False), prefill_device=dev(c.get("prefillDevice")), decode_device=dev(c.get("decodeDevice")),
-        kv_transit=tr, batch_policy=c.get("batchPolicy", "prefill-priority"),
+        kv_compression=KV_PRESETS[c["kvCompress"]] if "kvCompress" in c else None,
+        batch_policy=c.get("batchPolicy", "prefill-priority"),
         max_num_batched_tokens=c.get("maxNumBatchedTokens"), kv_policy=c.get("kvPolicy", "oracle"),
         kv_block_size=c.get("kvBlockSize", 16), preemption=c.get("preemption", "recompute"),
         host_link=LINKS[c.get("hostLink", "pcie5")], prefix_caching=c.get("prefixCaching", False),
@@ -306,20 +297,14 @@ def pools() -> dict:
 
 
 def hetero() -> dict:
-    """Chapter 5: different hardware per pool (Llama-3-8B, section 10) and the optical prefill pool (section 11)."""
+    """Chapter 5: different hardware per pool, H100 and A100 (Llama-3-8B, section 10)."""
     reqs = poisson_workload(8.0, 14, LengthDist(2048, 0.5), LengthDist(48, 0.5), seed=1)
     rows = workload_rows(reqs)
     base = {"model": "llama3-8b", "device": "h100", "devicesPerInstance": 1, "mode": "disagg"}
-    circ = {"model": "llama3-8b-hyena-circ", "lmHead": "last", "device": "h100", "devicesPerInstance": 1,
-            "mode": "disagg"}
     v = [("h100-h100", "H100 prefill, H100 decode", base),
          ("h100-a100", "H100 prefill, A100 decode", {**base, "decodeDevice": "a100"}),
          ("a100-h100", "A100 prefill, H100 decode", {**base, "prefillDevice": "a100"}),
-         ("circ-gpu", "FFT model: H100 prefill, H100 decode", circ),
-         ("circ-optical", "FFT model: optical prefill (optimistic), H100 decode",
-          {**circ, "prefillDevice": "optical-fft", "engine": {"enob": 11, "maskRate": 20000.0, "overlap": True}}),
-         ("circ-optical-default", "FFT model: optical prefill (defaults), H100 decode",
-          {**circ, "prefillDevice": "optical-fft"})]
+         ("2a100-h100", "2 x A100 prefill, H100 decode", {**base, "prefillDevice": "a100", "nPrefill": 2})]
     return {"title": "Heterogeneous pools", "variants": [run_variant(k, lab, o, rows) for k, lab, o in v]}
 
 
@@ -331,9 +316,8 @@ def handoff() -> dict:
     v = [("nvlink4", "NVLink 4", {"link": "nvlink4"}),
          ("ib-ndr", "InfiniBand NDR", {"link": "ib-ndr"}),
          ("eth-25g", "25 GbE", {"link": "eth-25g"}),
-         ("eth-25g-fp8", "25 GbE, FP8 in transit", {"link": "eth-25g", "kvCompress": "fp8"}),
-         ("eth-25g-fp4-gpu", "25 GbE, FP4 blocks at the GPU",
-          {"link": "eth-25g", "kvCompress": "fp4-block", "kvCompressAt": "endpoint"})]
+         ("eth-25g-fp8", "25 GbE, FP8 on the prefill GPU", {"link": "eth-25g", "kvCompress": "fp8"}),
+         ("eth-25g-fp4-gpu", "25 GbE, FP4 blocks on the prefill GPU", {"link": "eth-25g", "kvCompress": "fp4-block"})]
     return {"title": "KV hand-off", "variants": [run_variant(k, lab, {**base, **o}, rows) for k, lab, o in v]}
 
 
