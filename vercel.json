@@ -1,0 +1,30 @@
+{
+  "$schema": "https://openapi.vercel.sh/vercel.json",
+  "redirects": [
+    {
+      "source": "/learn/05-heterogeneous-and-optical-pools",
+      "destination": "/learn/05-heterogeneous-pools",
+      "permanent": true
+    }
+  ],
+  "headers": [
+    {
+      "source": "/(.*)opengraph-image",
+      "headers": [
+        {
+          "key": "Content-Type",
+          "value": "image/png"
+        }
+      ]
+    },
+    {
+      "source": "/(.*)twitter-image",
+      "headers": [
+        {
+          "key": "Content-Type",
+          "value": "image/png"
+        }
+      ]
+    }
+  ]
+}
